@@ -161,8 +161,8 @@ const renderAlerts = (alerts) => {
 const renderReplies = (replies) => {
   const list = $('#replies-list');
   if (!replies || !replies.length) {
-    list.innerHTML = '<div class="dash-loading">no replies yet — engine paused (x verification)</div>';
-    $('#replies-sub').textContent = '0 replies · X auth blocked';
+    list.innerHTML = '<div class="dash-loading">no replies yet — awaiting first worthy mention</div>';
+    $('#replies-sub').textContent = '0 replies · live every 15m';
     return;
   }
   list.innerHTML = '';
@@ -188,18 +188,26 @@ const renderBackrooms = (rooms) => {
     return;
   }
   list.innerHTML = '';
-  rooms.slice(0, 5).forEach(r => {
+  rooms.slice(0, 6).forEach(r => {
     const item = el('div', 'dash-item');
-    const turnsCount = (r.turns || []).length;
-    const firstTurn = (r.turns || [])[0]?.body || '';
+    const msgs = r.messages || r.turns || [];
+    const firstMsg = msgs[0] || {};
+    const firstText = firstMsg.text || firstMsg.body || '';
+    const isLive = r.trigger?.type === 'insider_alert' || (r.id || '').startsWith('br-live');
+    const isHistorical = (r.id || '').startsWith('br-h');
+    const tag = isLive ? '<span class="dash-tag" style="background:var(--red);color:white">live</span> '
+              : isHistorical ? '<span class="dash-tag" style="background:var(--phos-dim)">archive</span> '
+              : '';
     item.innerHTML = `
-      <span class="dash-item-time">${escapeHTML(r.date || '')} · ${turnsCount} turns</span>
-      <div class="dash-item-body">${escapeHTML((firstTurn || '').slice(0, 220))}${firstTurn.length > 220 ? '…' : ''}</div>
-      <div class="dash-item-meta"><a href="/backrooms.html#${escapeHTML(r.date || '')}">read full archive →</a></div>
+      <span class="dash-item-time">${tag}${escapeHTML(r.date || '')} · ${escapeHTML(r.title || '')} · ${msgs.length} msgs</span>
+      <div class="dash-item-body">${escapeHTML((firstText || '').slice(0, 220))}${firstText.length > 220 ? '…' : ''}</div>
+      <div class="dash-item-meta"><a href="/backrooms.html#${escapeHTML(r.id || r.date || '')}">read full archive →</a></div>
     `;
     list.appendChild(item);
   });
-  $('#backrooms-sub').textContent = `${rooms.length} total`;
+  const liveCount  = rooms.filter(r => r.trigger?.type === 'insider_alert' || (r.id||'').startsWith('br-live')).length;
+  const histCount  = rooms.filter(r => (r.id||'').startsWith('br-h')).length;
+  $('#backrooms-sub').textContent = `${rooms.length} total · ${histCount} archive · ${liveCount} live`;
 };
 
 // ── monitor health ─────────────────────────────────────────────────

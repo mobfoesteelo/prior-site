@@ -1561,3 +1561,34 @@ footer p.fine.dim { opacity: 0.3; }
   object-fit: contain;
   margin: 0 auto;
 }
+
+/* Backrooms tags (LIVE / ARCHIVE) */
+.br-conv-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0 6px;
+}
+.br-tag-live {
+  background: var(--red);
+  color: white;
+  animation: dash-blink 2s infinite;
+}
+.br-tag-archive {
+  background: var(--phos-dim);
+  color: var(--bg);
+}
+.br-conv-trigger {
+  font-size: 0.72rem;
+  color: var(--smoke);
+  margin: 4px 0 8px;
+  font-style: italic;
+}
+.br-conv-trigger a { color: var(--phos); }
+.br-conv-trigger a:hover { text-decoration: underline; }
+@keyframes dash-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}

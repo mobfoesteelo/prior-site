@@ -116,14 +116,21 @@ document.getElementById('year').textContent = new Date().getFullYear();
     const block = document.createElement('article');
     block.className = 'br-conv';
     const turns = (conv.messages || []).length;
+    const isLive = conv.trigger?.type === 'insider_alert' || (conv.id || '').startsWith('br-live');
+    const isHist = (conv.id || '').startsWith('br-h');
+    const tag = isLive ? '<span class="br-conv-tag br-tag-live">LIVE</span>'
+              : isHist ? '<span class="br-conv-tag br-tag-archive">ARCHIVE</span>'
+              : '';
     block.innerHTML = `
       <header class="br-conv-head">
         <span class="br-conv-id">${conv.id}</span>
+        ${tag}
         <span class="br-conv-date">${conv.date || ''}</span>
         <span class="br-conv-title">// ${conv.title || ''}</span>
         <span class="br-conv-turns">${turns} turns</span>
       </header>
       ${conv.summary ? `<p class="br-conv-sum">~ ${conv.summary}</p>` : ''}
+      ${conv.trigger?.url ? `<p class="br-conv-trigger">~ trigger: <a href="${conv.trigger.url}" target="_blank" rel="noopener">${conv.trigger.source || 'source'}</a></p>` : ''}
       <div class="br-msgs"></div>
     `;
     const msgsDiv = block.querySelector('.br-msgs');
