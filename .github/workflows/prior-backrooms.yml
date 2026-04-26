@@ -47,8 +47,8 @@ jobs:
         run: |
           git config user.name  "prior.backrooms"
           git config user.email "prior-bot@users.noreply.github.com"
-          if [[ -n "$(git status --porcelain api/backrooms.json)" ]]; then
-            git add api/backrooms.json
+          if [[ -n "$(git status --porcelain data/backrooms.json)" ]]; then
+            git add data/backrooms.json
             git commit -m "backrooms: $(date -u +'%Y-%m-%d') · self-conversation archived"
             git push
           else

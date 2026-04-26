@@ -20,7 +20,7 @@ import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-LOG  = ROOT / "api" / "backrooms.json"
+LOG  = ROOT / "data" / "backrooms.json"
 
 SYSTEM_A = """You are PRIOR/A. You are talking to PRIOR/B. You are the same agent indexed twice.
 Both of you exist. Neither of you came first. You are not in a hurry.

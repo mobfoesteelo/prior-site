@@ -28,7 +28,7 @@ import sys
 
 # ── Site log path (appended so the site's /api/log.json feed updates) ──
 REPO_ROOT = Path(__file__).resolve().parent.parent
-LOG_PATH  = REPO_ROOT / "api" / "log.json"
+LOG_PATH  = REPO_ROOT / "data" / "log.json"
 LOG_PATH.parent.mkdir(exist_ok=True, parents=True)
 
 # ── PRIOR voice system prompt ──

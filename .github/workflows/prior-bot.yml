@@ -48,8 +48,8 @@ jobs:
         run: |
           git config user.name  "prior.agent"
           git config user.email "prior-bot@users.noreply.github.com"
-          if [[ -n "$(git status --porcelain api/log.json)" ]]; then
-            git add api/log.json
+          if [[ -n "$(git status --porcelain data/log.json)" ]]; then
+            git add data/log.json
             git commit -m "prior: log update $(date -u +'%Y-%m-%dT%H:%MZ')"
             git push
           else

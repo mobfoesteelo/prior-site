@@ -125,13 +125,13 @@ window.copyCA = copyCA;
 })();
 
 // ── LIVE-ISH FEED ──
-// Attempts to load latest posts from a static JSON file at /api/log.json
+// Attempts to load latest posts from a static JSON file at /data/log.json
 // If absent, leaves the hardcoded HTML feed in place.
 (async () => {
   const feedEl = document.getElementById('feed');
   if (!feedEl) return;
   try {
-    const res = await fetch('/api/log.json', { cache: 'no-store' });
+    const res = await fetch('/data/log.json', { cache: 'no-store' });
     if (!res.ok) return;
     const data = await res.json();
     if (!Array.isArray(data) || !data.length) return;
