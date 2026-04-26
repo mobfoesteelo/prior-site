@@ -1,12 +1,10 @@
 name: prior.replies
 
 on:
-  # PAUSED: writes work but mention reads still 401 — needs X app token regen.
-  # Fix: developer.x.com → app → User auth settings → "Read and Write" → save
-  # → Keys & Tokens tab → REGENERATE Access Token & Secret → update both GH secrets.
-  # Then uncomment the cron line below.
-  # schedule:
-  #   - cron: '*/15 * * * *'
+  # LIVE: every 15 min mention engagement, 12 replies/day cap.
+  # Uses app-only bearer for reads (no rotation, no refresh) + OAuth 1.0a for writes.
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -53,11 +51,7 @@ jobs:
           X_API_SECRET:                    ${{ secrets.X_API_SECRET }}
           X_ACCESS_TOKEN:                  ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET:           ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-          X_OAUTH2_CLIENT_ID:              ${{ secrets.X_OAUTH2_CLIENT_ID }}
-          X_OAUTH2_CLIENT_SECRET:          ${{ secrets.X_OAUTH2_CLIENT_SECRET }}
-          X_OAUTH2_ACCESS_TOKEN:           ${{ secrets.X_OAUTH2_ACCESS_TOKEN }}
-          X_OAUTH2_REFRESH_TOKEN:          ${{ secrets.X_OAUTH2_REFRESH_TOKEN }}
-          SECRETS_PAT:                     ${{ secrets.SECRETS_PAT }}
+          X_BEARER_TOKEN:                  ${{ secrets.X_BEARER_TOKEN }}
           PRIOR_DRY_RUN:                   ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
           PRIOR_REPLIES_MAX_PER_DAY:       ${{ github.event.inputs.max_per_day || '12' }}
           PRIOR_REPLIES_MIN_FOLLOWERS:     ${{ github.event.inputs.min_followers || '10' }}

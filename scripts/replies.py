@@ -163,29 +163,14 @@ Output ONLY the JSON object. No preamble."""
 # X helpers — dual-auth setup
 #
 # X (April 2026) free tier behaviour:
-#   - OAuth 1.0a User Context: WRITES only (create_tweet, media_upload).
-#   - OAuth 2.0 PKCE User Context: READS (mentions, search, timeline).
+#   - OAuth 1.0a User Context: WRITES (create_tweet, media_upload).
+#   - App-only Bearer Token:   READS (mentions, search, timeline).
 #
-# So we need both.
-#
-# OAuth 2.0 access tokens expire after ~2 hours. We refresh on every run
-# using the refresh_token. X rotates the refresh_token on every refresh,
-# so the new one MUST be persisted back into the GitHub secret store via
-# the SECRETS_PAT (a fine-grained PAT with secrets:write).
-#
-# If SECRETS_PAT is missing, refresh still happens but the new
-# refresh_token is logged-only and the next run will fail. That's a
-# bootstrap problem the operator solves once.
+# Bearer is the auto-generated app token from the X dev portal. It is
+# long-lived, does not rotate, requires no refresh.
 # ─────────────────────────────────────────────────────────────────────
 
-import base64
-import urllib.request
-import urllib.parse
-import urllib.error
-import subprocess
-
-
-def x_oauth1_client():
+def x_write_client():
     """Tweepy client with OAuth 1.0a user context — for writes."""
     try:
         import tweepy
@@ -206,121 +191,22 @@ def x_oauth1_client():
     )
 
 
-def refresh_oauth2_token():
-    """Refresh OAuth 2.0 access token using the stored refresh token.
-
-    Returns: (new_access_token, new_refresh_token) or (None, None) on failure.
-    """
-    cid     = os.environ.get("X_OAUTH2_CLIENT_ID")
-    csecret = os.environ.get("X_OAUTH2_CLIENT_SECRET")
-    rt      = os.environ.get("X_OAUTH2_REFRESH_TOKEN")
-    if not (cid and csecret and rt):
-        print("[oauth2] missing client_id / client_secret / refresh_token — skipping refresh")
-        return None, None
-
-    body = urllib.parse.urlencode({
-        "grant_type":    "refresh_token",
-        "refresh_token": rt,
-        "client_id":     cid,
-    }).encode("utf-8")
-
-    basic = base64.b64encode(f"{cid}:{csecret}".encode("utf-8")).decode("ascii")
-    req = urllib.request.Request(
-        "https://api.x.com/2/oauth2/token",
-        data=body,
-        headers={
-            "Authorization": f"Basic {basic}",
-            "Content-Type":  "application/x-www-form-urlencoded",
-        },
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            payload = json.loads(r.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        msg = e.read().decode("utf-8", errors="replace")[:300]
-        print(f"[oauth2] refresh failed: {e.code} {msg}")
-        return None, None
-    except Exception as e:
-        print(f"[oauth2] refresh error: {type(e).__name__} {e}")
-        return None, None
-
-    at = payload.get("access_token")
-    new_rt = payload.get("refresh_token") or rt   # X usually rotates; fall back to old if not
-    if not at:
-        print(f"[oauth2] no access_token in response: {payload}")
-        return None, None
-
-    print(f"[oauth2] refreshed · access_token expires in {payload.get('expires_in')}s · refresh_token rotated={new_rt != rt}")
-    return at, new_rt
-
-
-def persist_oauth2_tokens(access_token: str, refresh_token: str):
-    """Write fresh tokens back to GH Secrets via SECRETS_PAT.
-
-    No-op if SECRETS_PAT is not set (bootstrap mode).
-    """
-    pat = os.environ.get("SECRETS_PAT")
-    if not pat:
-        print("[oauth2] SECRETS_PAT not set — cannot rotate refresh_token. Next run will likely fail.")
-        return False
-
-    repo = os.environ.get("GITHUB_REPOSITORY") or "mobfoesteelo/prior-site"
-
-    # Use gh CLI with token override
-    env = os.environ.copy()
-    env["GH_TOKEN"] = pat
-
-    ok = True
-    for name, val in [
-        ("X_OAUTH2_ACCESS_TOKEN",  access_token),
-        ("X_OAUTH2_REFRESH_TOKEN", refresh_token),
-    ]:
-        try:
-            p = subprocess.run(
-                ["gh", "secret", "set", name, "--repo", repo],
-                input=val, text=True, capture_output=True, env=env, timeout=30,
-            )
-            if p.returncode != 0:
-                print(f"[oauth2] failed to update {name}: {p.stderr.strip()}")
-                ok = False
-            else:
-                print(f"[oauth2] persisted {name}")
-        except Exception as e:
-            print(f"[oauth2] persist {name} error: {e}")
-            ok = False
-    return ok
-
-
-def x_oauth2_client():
-    """Tweepy client with OAuth 2.0 user-context — for reads (mentions, search).
-
-    Refreshes the token, persists the new refresh_token, returns a Client.
-    """
+def x_read_client():
+    """Tweepy client with app-only bearer — for reads (mentions, search)."""
     try:
         import tweepy
     except ImportError:
         sys.exit("ERROR: pip install tweepy")
 
-    new_at, new_rt = refresh_oauth2_token()
-    if not new_at:
-        # Refresh failed; fall back to the stored access_token (might still be valid for ~2h after generation)
-        new_at = os.environ.get("X_OAUTH2_ACCESS_TOKEN")
-        if not new_at:
-            sys.exit("ERROR: no OAuth2 access token available")
-        print("[oauth2] using stored access_token (refresh failed)")
-    else:
-        # Persist the new refresh_token so the next run can use it
-        persist_oauth2_tokens(new_at, new_rt)
-
-    return tweepy.Client(new_at, wait_on_rate_limit=True)
+    bt = os.environ.get("X_BEARER_TOKEN")
+    if not bt:
+        sys.exit("ERROR: X_BEARER_TOKEN not set")
+    return tweepy.Client(bearer_token=bt, wait_on_rate_limit=True)
 
 
-def get_my_id(read_client):
-    """OAuth 2.0 client doesn't have consumer_key, so get_me() trips a tweepy quirk.
-    Use the access_token from OAuth 1.0a flow which embeds the user_id."""
+def get_my_id():
+    """Derive user_id from the OAuth 1.0a access_token (which embeds it as a prefix)."""
     tok = os.environ.get("X_ACCESS_TOKEN", "")
-    # X access_token format: <user_id>-<random>
     if "-" in tok:
         return tok.split("-", 1)[0]
     sys.exit("ERROR: could not resolve user id from X_ACCESS_TOKEN")
@@ -381,11 +267,11 @@ def main():
         print(f"[skip] daily reply cap reached ({daily_count}/{max_per_day})")
         return
 
-    # Two clients: OAuth 2.0 for reads, OAuth 1.0a for writes (X free-tier requires this split)
-    read_client  = x_oauth2_client()
-    write_client = x_oauth1_client()
+    # Two clients: bearer for reads, OAuth 1.0a for writes (X free-tier requires this split)
+    read_client  = x_read_client()
+    write_client = x_write_client()
 
-    my_id = get_my_id(read_client)
+    my_id = get_my_id()
     print(f"[replies] my user id = {my_id}, since_id = {state.get('since_id')}")
 
     mentions = fetch_mentions(read_client, my_id, state.get("since_id"))
