@@ -74,10 +74,11 @@ updateClock();
 
 // ── engine status ──────────────────────────────────────────────────
 const ENGINES = [
-  { id: 'agent',     name: 'prior.agent',     cap: 6,  workflow: 'prior-bot.yml',       cron: 'every 4h · :17',    paused: true },
-  { id: 'monitor',   name: 'prior.monitor',   cap: 4,  workflow: 'prior-monitor.yml',   cron: 'every 15m',         paused: true },
+  { id: 'agent',     name: 'prior.agent',     cap: 6,  workflow: 'prior-bot.yml',       cron: 'every 4h · :17',    paused: false },
+  { id: 'memes',     name: 'prior.memes',     cap: 3,  workflow: 'prior-memes.yml',     cron: 'every 8h · :42',    paused: false },
+  { id: 'monitor',   name: 'prior.monitor',   cap: 4,  workflow: 'prior-monitor.yml',   cron: 'every 15m',         paused: false },
   { id: 'replies',   name: 'prior.replies',   cap: 8,  workflow: 'prior-replies.yml',   cron: 'every 30m',         paused: true },
-  { id: 'backrooms', name: 'prior.backrooms', cap: 1,  workflow: 'prior-backrooms.yml', cron: 'daily · 03:11 UTC', paused: true },
+  { id: 'backrooms', name: 'prior.backrooms', cap: 1,  workflow: 'prior-backrooms.yml', cron: 'daily · 03:11 UTC', paused: false },
 ];
 
 const renderEngines = (data) => {
@@ -120,8 +121,13 @@ const renderPosts = (log) => {
     const linkHTML = e.url
       ? `<div class="dash-item-meta"><a href="${escapeHTML(e.url)}" target="_blank" rel="noopener">view on x ↗</a></div>`
       : `<div class="dash-item-meta">— dry run · not posted —</div>`;
+    const imgHTML = e.image
+      ? `<div class="dash-item-img"><img src="${escapeHTML(e.image)}" alt="meme" loading="lazy"></div>`
+      : '';
+    const typeBadge = e.type === 'meme' ? '<span class="dash-tag">meme</span> ' : '';
     item.innerHTML = `
-      <span class="dash-item-time">${escapeHTML(e.time || '')}</span>
+      <span class="dash-item-time">${typeBadge}${escapeHTML(e.time || '')}</span>
+      ${imgHTML}
       <div class="dash-item-body">${escapeHTML(e.body || '')}</div>
       ${linkHTML}
     `;
@@ -258,11 +264,13 @@ const renderGH = (runs) => {
 const renderBudget = (counts) => {
   const grid = $('#budget-grid');
   grid.innerHTML = '';
+  const total = counts.posts + counts.memes + counts.alerts + counts.replies;
   const items = [
     { name: 'autonomous posts', count: counts.posts,   cap: 6 },
+    { name: 'memes',            count: counts.memes,   cap: 3 },
     { name: 'monitor alerts',   count: counts.alerts,  cap: 4 },
     { name: 'replies',          count: counts.replies, cap: 8 },
-    { name: 'total today',      count: counts.posts + counts.alerts + counts.replies, cap: 17 },
+    { name: 'total today',      count: total,          cap: 17 },
   ];
   items.forEach(it => {
     const pct = Math.min(100, (it.count / it.cap) * 100);
@@ -319,7 +327,11 @@ async function refresh() {
   });
 
   // Override "today" counts with actual data-based counts where available
-  engineData.agent.today     = countToday(log);
+  const memeCount = (log || []).filter(e => e.type === 'meme').length;
+  const memeToday = countToday((log || []).filter(e => e.type === 'meme'));
+  const textPosts = (log || []).filter(e => e.type !== 'meme');
+  engineData.agent.today     = countToday(textPosts);
+  engineData.memes.today     = memeToday;
   engineData.monitor.today   = countToday(alerts);
   engineData.replies.today   = countToday(replies);
   engineData.backrooms.today = countToday(rooms || [], 'date');
@@ -333,6 +345,7 @@ async function refresh() {
   renderGH(ghRuns);
   renderBudget({
     posts:   engineData.agent.today,
+    memes:   engineData.memes.today,
     alerts:  engineData.monitor.today,
     replies: engineData.replies.today,
   });

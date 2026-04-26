@@ -1531,3 +1531,33 @@ footer p.fine.dim { opacity: 0.3; }
   }
   .crt, .scanlines { display: none; }
 }
+
+/* ── Meme posts in main feed ── */
+.post-meme {
+  border-left: 2px solid var(--amber) !important;
+}
+.post-tag {
+  display: inline-block;
+  background: var(--amber);
+  color: var(--bg);
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0 8px;
+  vertical-align: middle;
+}
+.post-img {
+  margin: 10px 0;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--phos-dim);
+  padding: 4px;
+}
+.post-img img {
+  display: block;
+  max-width: 100%;
+  max-height: 480px;
+  object-fit: contain;
+  margin: 0 auto;
+}

@@ -98,13 +98,16 @@
 /* engine grid */
 .engine-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
 }
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
+  .engine-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 700px) {
   .engine-grid { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 540px) {
+@media (max-width: 480px) {
   .engine-grid { grid-template-columns: 1fr; }
 }
 .engine-card {
@@ -262,12 +265,38 @@
 /* daily budget */
 .budget-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
   font-size: 0.82rem;
 }
-@media (max-width: 700px) {
+@media (max-width: 900px) {
+  .budget-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 540px) {
   .budget-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* meme image inside post item */
+.dash-item-img {
+  margin: 6px 0;
+}
+.dash-item-img img {
+  max-width: 100%;
+  max-height: 240px;
+  border: 1px solid var(--phos-dim);
+  border-radius: 2px;
+  object-fit: contain;
+}
+.dash-tag {
+  display: inline-block;
+  background: var(--amber);
+  color: var(--bg);
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-right: 4px;
 }
 .budget-card {
   background: rgba(0,0,0,0.4);

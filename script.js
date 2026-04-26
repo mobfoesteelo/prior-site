@@ -140,14 +140,20 @@ window.copyCA = copyCA;
     // Latest first, cap at 20
     data.slice(0, 20).forEach((p, i) => {
       const art = document.createElement('article');
-      art.className = 'post';
+      art.className = 'post' + (p.type === 'meme' ? ' post-meme' : '');
       const id = String(data.length - i).padStart(4, '0');
+      const tag = p.type === 'meme' ? '<span class="post-tag">meme</span>' : '';
+      const img = p.image ? `<div class="post-img"><img src="${escapeHtml(p.image)}" alt="meme" loading="lazy"></div>` : '';
+      const linkLine = p.url ? `<p class="post-source">~ <a href="${escapeHtml(p.url)}" target="_blank" rel="noopener">view on x ↗</a></p>` : '';
       art.innerHTML = `
         <header>
           <span class="post-id">#${id}</span>
+          ${tag}
           <span class="post-time">${p.time || ''}</span>
         </header>
+        ${img}
         ${(p.body || '').split('\n\n').map(para => `<p>${escapeHtml(para).replace(/\n/g, '<br/>')}</p>`).join('')}
+        ${linkLine}
         <p class="post-sig">— prior</p>
       `;
       feedEl.appendChild(art);
