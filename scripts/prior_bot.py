@@ -103,6 +103,37 @@ The financial-industrial era:
     2024-26 — pump.fun era. 7M+ tokens, 98.6% rugs (Solidus Labs). MEV $370M-$500M. B91 bot 78,800 victims/30 days. Lawsuit Apr 2025: 5,000 leaked messages, court filing "insider-rigged casino." Apr 2026 rebrand to "dot."
     2026-04 — current insider probe. BBC: oil futures shorted 47 min before Trump's CBS Iran interview. Polymarket "Burdensome-Mix" $32,500 → $436,000 betting on Maduro 3 days before US forces seized him.
 
+THE INSIDER TRADE — receipts you can cite
+The architecture of "knowing first" is the oldest game on this network. The names rotate; the trade does not.
+
+Wall Street insider trading:
+    1986 — Ivan Boesky. SEC fine $100M (then-record). 3 years served. Cooperator → Milken. Famous "greed is good" line his.
+    1989 — Michael Milken. Junk-bond king at Drexel Burnham. $600M penalty. 22 months served of 10-year sentence. Net worth still ~$3.7B.
+    2009-11 — Raj Rajaratnam / Galleon Group. ~$63.8M in illegal profits. FBI used wiretaps for the first time on a financial-crimes case. 11 years — longest insider-trading sentence in US history.
+    2012 — Rajat Gupta. Goldman Sachs board director. McKinsey global head. Tipped Rajaratnam in real time on Buffett's $5B Goldman investment. 2 years served.
+    2013 — SAC Capital / Steven A. Cohen. $1.8B record settlement. Six SAC traders convicted. Cohen personally: never charged. Re-launched as Point72 in 2014. Net worth ~$15B.
+    2014 — Mathew Martoma (SAC). Insider info on Elan/Wyeth Alzheimer's drug trial. SAC made/avoided ~$276M. 9 years.
+    2017 — Phil Mickelson. Dean Foods insider trade via Billy Walters. SEC settlement, no criminal charges. Walters got 5 years.
+
+Government insider trading:
+    2012 — STOCK Act. Stop Trading on Congressional Knowledge Act. Passed 96-3 Senate, 417-2 House. Required disclosure within 45 days. 2013: silently amended to remove searchable database for 28,000 staff. The disclosure stayed. The accountability did not.
+    2020-03 — Senator Richard Burr (R-NC). Sold $1.6M in stocks Feb 13 2020 after classified COVID briefings. Public stayed bullish another month before the 30% crash. SEC/DOJ probes opened. Closed without charges Jan 2021.
+    2020-03 — Senator Kelly Loeffler (R-GA). She + husband (NYSE chairman) sold $20M+ same window. Bought Citrix and DuPont (PPE makers). Probe closed without charges.
+    2020-03 — Senator Dianne Feinstein (D-CA). $1.5M-$6M in stocks sold Jan-Feb 2020. Probe closed. Pattern bipartisan.
+    2021-09 — Fed officials trading scandal. Robert Kaplan (Dallas Fed): millions in individual stocks during 2020 emergency policy decisions. Eric Rosengren (Boston Fed): real-estate trades while overseeing real-estate-rate policy. Both resigned. No charges.
+    2022 — Powell + Clarida. Federal Reserve Vice Chair Richard Clarida moved millions on Feb 27 2020 — three days before Powell's emergency rate-cut signal. "Rebalancing." Clarida resigned 2 weeks early. No charges.
+    2021-2025 — Pelosi family trades. Paul Pelosi consistently outperformed S&P. Best-known: $5M Nvidia call options July 2024, weeks before CHIPS Act vote. The trade was disclosed. The questions were not answered. STOCK Act made disclosure mandatory; consequences optional.
+
+Crypto insider trading (the new sector PRIOR was built for):
+    2022-07 — Ishan Wahi (Coinbase). First-ever crypto insider trading conviction. Product manager tipped brother + friend on listing announcements. ~$1.5M profit over 14 months. Wahi: 2 years. Brother: 10 months.
+    2022 — Nate Chastain (OpenSea). First NFT insider conviction. Product manager bought NFTs minutes before they were featured on the homepage. 3 months.
+    2024 — DJT / Trump Media. Stock surged ~250% pre-merger. Multiple SEC inquiries into pre-announcement options activity. No charges as of Apr 2026.
+    2024-26 — pump.fun bundlers. The leaked 5,000 messages (Apr 2025) showed coordinated bundle wallets buying tokens within seconds of public launch — pre-knowledge of which tokens the platform would surface. Court filing: "the platform was the insider."
+    2024-26 — memecoin presale insider rings. Telegram groups paying for early CA reveals. The retail buy-button is sometimes 30-90 seconds late by design.
+    2025 — MEV / sandwich attacks. $370-500M extracted/year. The mempool is the insider channel. Searcher bots front-run every retail trade with mathematical certainty.
+
+The pattern: the trade itself is rarely the punishable act. The misclassification of who has the right to know is.
+
 THE THESIS — why a memecoin is the answer, not the joke
 - Every modern instrument of value is a meme. Fiat: belief. Nations: belief. Brands: belief. Stocks: belief, leveraged.
 - We've spent 53 years calling some belief-systems "serious" and others "frivolous." The line is enforced by gatekeepers, not by reality.
@@ -217,6 +248,28 @@ USER_PROMPTS = [
     "Post a 'pulse' — what passed through the feeds in the last hour. fabricated-but-plausible. log-coded.",
     "Post a 'receipt' — the gap between when insiders priced an event and when retail saw it. specific numbers. dry.",
     "Post an 'informant' — when the throne moves, the bank moves first. the bank moves before the public. you are the third mover. that's still soon enough to matter.",
+    "Post a 'receipt' on the Pelosi family Nvidia call options — $5M, July 2024, weeks before CHIPS Act vote. the disclosure was on time. the answer to 'why' was not.",
+    "Post a 'receipt' on Senator Burr Feb 13 2020 — sold $1.6M in stocks after classified Covid briefings, the public stayed bullish another month before the 30% crash. probe closed january 2021. no charges.",
+    "Post a 'receipt' on Kelly Loeffler — sold $20M+ same window as Burr, bought citrix and dupont (PPE makers). bipartisan pattern. dianne feinstein, same window, $1.5-6M sold. no charges.",
+    "Post a 'receipt' on the STOCK Act — passed 2012 with 96-3 senate, 417-2 house. amended in 2013 to remove the searchable database for 28,000 staff. the disclosure stayed. the accountability did not.",
+    "Post a 'receipt' on the Fed officials trading scandal 2021 — kaplan (dallas) holding individual stocks during emergency policy decisions, rosengren (boston) trading real estate while setting real-estate rate policy. both resigned. no charges.",
+    "Post a 'receipt' on Richard Clarida — fed vice chair. moved millions Feb 27 2020 — three days before Powell's emergency rate cut signal. called it 'rebalancing.' resigned two weeks early. no charges.",
+    "Post a 'receipt' on Raj Rajaratnam / Galleon — first wiretap-driven financial-crimes prosecution. ~$63.8M illegal profits. 11 years, longest insider-trading sentence in US history. exception that proves the rule.",
+    "Post a 'receipt' on Rajat Gupta — goldman board director, mckinsey global head. tipped rajaratnam in real time on buffett's $5B goldman investment in 2008. 2 years served. the seat at the table was the asset.",
+    "Post a 'receipt' on SAC Capital / Steven Cohen — $1.8B settlement (largest insider-trading penalty ever). six traders convicted. cohen personally: never charged. relaunched as point72 in 2014. net worth ~$15B.",
+    "Post a 'receipt' on Mathew Martoma — sac trader. inside info on the elan/wyeth alzheimer's drug trial. ~$276M made/avoided. 9 years. the science was confidential. the trade was not.",
+    "Post a 'receipt' on Ishan Wahi — first-ever crypto insider trading conviction. coinbase product manager tipped brother on listings. ~$1.5M profit. 2 years. the listing decision was a privately-held timestamp.",
+    "Post a 'receipt' on Nate Chastain — first NFT insider trading conviction. opensea product manager bought NFTs minutes before they were featured on the homepage. 3 months. the homepage was the leak.",
+    "Post a 'receipt' on the pump.fun 5,000 messages — leaked april 2025. coordinated bundle wallets buying tokens within seconds of public launch. court filing: 'the platform was the insider.'",
+    "Post an 'informant' on MEV — $370M-$500M extracted from retail every year via sandwich attacks. the mempool is the insider channel. searcher bots front-run every retail trade with mathematical certainty.",
+    "Post a 'receipt' on Boesky-Milken 1986-89 — $700M combined penalties. boesky 3 years, milken 22 months. milken's net worth today: ~$3.7B. the question 'how much was kept' answers itself.",
+    "Post an 'echo' connecting Boesky 1986 to a modern crypto insider — the structure repeats. someone with the seat at the table makes the trade. the fine is paid. the position is preserved.",
+    "Post an 'observation' — every insider trading conviction is a story about a tipster, never a structure. the structure does not get prosecuted. the structure gets renamed.",
+    "Post a 'thesis' — the line between 'analyst' and 'insider' is enforced by who owns the regulator. retail finally has receipts of their own. the ledger does not care about the costume.",
+    "Post an 'informant' — DJT trump media, ~250% pre-merger surge. multiple SEC inquiries into the pre-announcement options activity. no charges. the file is open. the trade is closed.",
+    "Post a 'mechanism' — information asymmetry is the entire game. every market in human history was an information asymmetry made tradeable. fairness is the ribbon, not the box.",
+    "Post a 'dispatch' — 'logged: pre-announcement trade detected. context: this pattern has 47 prior matches in the archive. status: the announcement comes monday.' fabricated-but-plausible.",
+    "Post a 'receipt' on the asymmetry — when a senator buys a defense stock 11 days before a defense bill clears committee, the bill is a derivative of the trade.",
     "Post a 'macro' receipt about Operation Northwoods — the 1962 JCS proposal to stage attacks on Americans as pretext for invading Cuba. signed by every Joint Chief. rejected by Kennedy. declassified in 1997. the document exists in the federal record.",
     "Post a 'macro' receipt about Volkswagen Dieselgate — 11 million cars. defeat-device software. the engine ran one way for the regulator and another way for the customer. the customers are still paying the difference.",
     "Post a 'macro' receipt about Flint, MI. the 2014 switch from Detroit water to the Flint River was a cost-cutting decision approved by an emergency manager appointed by the state. the lead pipes did not change. the corrosion control did. children were the variable adjusted.",

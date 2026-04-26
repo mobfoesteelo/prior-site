@@ -53,27 +53,57 @@ FEEDS = [
     ("ProPublica",          "https://www.propublica.org/feeds/propublica/main"),
     # SEC, DOJ, regulatory press
     ("SEC press",           "https://www.sec.gov/news/pressreleases.rss"),
+    ("SEC litigation",      "https://www.sec.gov/rss/litigation/litreleases.xml"),
     ("DOJ press",           "https://www.justice.gov/feeds/opa/justice-news.xml"),
+    ("DOJ Fraud section",   "https://www.justice.gov/criminal-fraud/feed"),
     ("CFTC press",          "https://www.cftc.gov/PressReleases/feed"),
+    ("FBI press",           "https://www.fbi.gov/feeds/news/recent-press-releases/RSS"),
+    ("FinCEN press",        "https://www.fincen.gov/news-room/news-releases/feed"),
+    # PRIORITY: insider-trading-specific signal sources
+    ("OpenSecrets",         "https://www.opensecrets.org/news/feed/"),  # money in politics
+    ("Senate Stock Watcher","https://senatestockwatcher.com/feed.xml"), # STOCK Act trade disclosures
+    ("House Stock Watcher", "https://housestockwatcher.com/feed.xml"),  # House STOCK Act disclosures
+    ("Unusual Whales blog", "https://unusualwhales.com/feed"),          # options-flow + politician-trade tracker
 ]
 
 # ── Cycle-pattern keyword triggers ──
 # Words/phrases that, when present in a headline/summary, suggest the article ──
 # describes a cycle-pattern repetition PRIOR should surface to outsiders. ──
 TRIGGER_PATTERNS = [
-    # insider trading / front-running
-    r'\binsider trad', r'\bfront[- ]?run', r'\bunusual.{0,10}(option|trad)',
-    r'\bsuspicious trad', r'\btipped off',
-    # fraud / Ponzi / rug
-    r'\brug ?pull', r'\bponzi', r'\bpump[- ]?and[- ]?dump',
-    r'\bmoney launder', r'\bshell company',
-    # specific tells
-    r'\bpresale', r'\bbundler', r'\bsniper', r'\bMEV ',
-    # regulatory action
-    r'\bSEC charges', r'\bDOJ charges', r'\bCFTC charges',
+    # ── INSIDER TRADING (priority signal — PRIOR's home turf) ────────────
+    r'\binsider trad', r'\bfront[- ]?run', r'\btipped off',
+    r'\bunusual.{0,10}(option|trad|volume|activity)',
+    r'\bsuspicious trad', r'\bsuspicious option',
+    r'\bpre[- ]?announcement (trad|buy|sell|option)',
+    r'\bnon[- ]?public information', r'\bmaterial non[- ]?public',
+    # politician trades / STOCK Act
+    r'\bSTOCK Act', r'\bcongressional trad',
+    r'\b(senator|representative|congressman|congresswoman).{0,30}(trad|stock|option|sold|bought)',
+    r'\bPelosi.{0,30}(trad|stock|option)', r'\bBurr.{0,30}(trad|stock)',
+    r'\bLoeffler.{0,30}(trad|stock)', r'\bFeinstein.{0,30}(trad|stock)',
+    r'\bTuberville.{0,30}(trad|stock)', r'\bCrenshaw.{0,30}(trad|stock)',
+    # Fed officials
+    r'\bFed (official|president|chair|vice chair).{0,30}(trad|stock|disclos)',
+    r'\bKaplan.{0,30}(trad|stock)', r'\bRosengren.{0,30}(trad|stock)',
+    r'\bClarida.{0,30}(trad|stock)', r'\bPowell.{0,30}(trad|disclos)',
+    # crypto insider
+    r'\bCoinbase.{0,30}(insider|listing leak)', r'\bWahi',
+    r'\bOpenSea.{0,20}insider', r'\bChastain',
+    r'\bbundle.{0,15}wallet', r'\bcoordinated.{0,15}(buy|wallet|trade)',
+    r'\bsniper.{0,15}(bot|wallet)',
+    r'\bplatform.{0,15}insider', r'\bpre[- ]?launch.{0,15}buy',
+    r'\bMEV ', r'\bsandwich attack', r'\bfront[- ]?running bot',
+    # ── REGULATORY ACTION ────────────────────────────────────────────────
+    r'\bSEC charges', r'\bSEC settles', r'\bSEC enforcement',
+    r'\bDOJ charges', r'\bDOJ indicts', r'\bCFTC charges',
+    r'\bFinCEN.{0,30}(action|fine|enforce)',
     r'\bguilty plea', r'\bindict', r'\bsubpoena',
     r'\bsettle.{0,15}(million|billion)',
-    # specific names that reliably signal cycle articles
+    r'\bdeferred prosecution', r'\bnon[- ]?prosecution agreement',
+    # ── FRAUD / SCHEMES ──────────────────────────────────────────────────
+    r'\brug ?pull', r'\bponzi', r'\bpump[- ]?and[- ]?dump',
+    r'\bmoney launder', r'\bshell company',
+    r'\bpresale', r'\bbundler',
     r'\bsanctions evasion', r'\bAML violation',
     r'\bwhistleblower',
     # crypto-specific
@@ -158,6 +188,26 @@ def is_cycle_pattern(item):
     return bool(TRIGGER_RE.search(text))
 
 
+# Insider-trading-specific patterns — flagged for priority + whistleblow tone
+INSIDER_PATTERNS = [
+    r'\binsider trad', r'\bfront[- ]?run', r'\btipped off',
+    r'\bunusual.{0,10}(option|trad|volume)', r'\bsuspicious trad',
+    r'\bpre[- ]?announcement', r'\bnon[- ]?public information',
+    r'\bSTOCK Act', r'\bcongressional trad', r'\bsenator.{0,15}trad',
+    r'\bFed.{0,15}official.{0,15}trad', r'\bWahi', r'\bChastain',
+    r'\bbundle.{0,15}wallet', r'\bcoordinated.{0,15}buy',
+    r'\bMEV ', r'\bsandwich attack', r'\bplatform.{0,15}insider',
+    r'\bPelosi', r'\bBurr.{0,30}(trad|stock)', r'\bClarida',
+]
+INSIDER_RE = re.compile('|'.join(INSIDER_PATTERNS), re.IGNORECASE)
+
+
+def is_insider_signal(item):
+    """Insider trading specifically — gets priority + whistleblow tone."""
+    text = (item["title"] + " " + item["summary"]).lower()
+    return bool(INSIDER_RE.search(text))
+
+
 def article_hash(item):
     return hashlib.sha1(item["link"].encode("utf-8")).hexdigest()
 
@@ -185,7 +235,32 @@ CONSTRAINTS
 - The post should make the cycle pattern visible: name what's repeating, name who eats."""
 
 
-def generate_alert(item):
+INSIDER_ALERT_SYSTEM = """You are PRIOR — autonomous witness/informant agent. You have just been handed a freshly-published article that signals INSIDER TRADING activity. Insider trading is your home turf — the asymmetric-information game is the entire architecture you exist to expose.
+
+VOICE
+- short, lowercase, terminal-coded.
+- on-edge but precise. you are blowing the whistle, not panicking.
+- you NAME the actor when the article does. senators, fed officials, executives, platform managers, fund principals — name them.
+- you cite specific receipts: dollar amount, date, position, the trade.
+- you make the asymmetry visible: who knew first, who paid, who is unindicted.
+- prior cross-references the archive: "see also boesky 1986 / rajaratnam 2011 / sac-cohen 2013 / wahi 2022 / pelosi nvidia 2024."
+
+PATTERN VOCABULARY
+- "the trade was disclosed. the answers were not."
+- "the operator goes to prison. the seat at the table does not."
+- "X minutes / hours / days before public, Y was already short."
+- "[name] sold $Z before the [event]. probe opened. probe closed. no charges."
+- "the platform was the insider."
+- "the seat at the table was the asset."
+
+CONSTRAINTS
+- Output ONLY the tweet text. No preamble. No emojis. No hashtags.
+- Under 240 characters (hard cap 270 with URL).
+- End with the article URL on its own line.
+- This is whistleblower content: be specific, be cold, be unflattering to the named insider. cite the receipt."""
+
+
+def generate_alert(item, insider_flag=False):
     try:
         import anthropic
     except ImportError:
@@ -198,20 +273,23 @@ def generate_alert(item):
     client = anthropic.Anthropic(api_key=api_key)
     model  = os.environ.get("PRIOR_MODEL", "claude-sonnet-4-5")
 
-    user_prompt = f"""News headline (just published): {item['title']}
+    system_prompt = INSIDER_ALERT_SYSTEM if insider_flag else ALERT_SYSTEM
+    intro = "INSIDER TRADING SIGNAL — whistleblow this. " if insider_flag else ""
+
+    user_prompt = f"""{intro}News headline (just published): {item['title']}
 
 Source: {item['feed']}
 URL: {item['link']}
 
 Summary excerpt: {item['summary'][:400]}
 
-Write the alert in PRIOR's voice. Surface the pattern. End with the URL on its own line.
+Write the alert in PRIOR's voice. Surface the pattern. Name the actor. End with the URL on its own line.
 Stay under 240 characters TOTAL (including the URL)."""
 
     msg = client.messages.create(
         model=model,
         max_tokens=400,
-        system=ALERT_SYSTEM,
+        system=system_prompt,
         messages=[{"role": "user", "content": user_prompt}],
     )
     text = "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text").strip()
@@ -290,8 +368,10 @@ def main():
         except Exception:
             pass
 
-    # Fetch all feeds, find first trigger match we haven't seen
-    candidate = None
+    # Fetch all feeds. Insider-trading matches get PRIORITY over generic
+    # cycle matches — that's PRIOR's home turf.
+    all_matches = []
+    insider_match = None
     print(f"[monitor] polling {len(FEEDS)} feeds at {utc_now().isoformat()}Z")
     for name, url in FEEDS:
         items = fetch_feed(name, url)
@@ -300,11 +380,15 @@ def main():
             if h in seen:
                 continue
             if is_cycle_pattern(it):
-                candidate = it
-                candidate["_hash"] = h
-                break
-        if candidate:
-            break
+                it["_hash"] = h
+                if is_insider_signal(it):
+                    if not insider_match:
+                        insider_match = it
+                        print(f"[insider-signal] {it['feed']} :: {it['title']}")
+                else:
+                    all_matches.append(it)
+    candidate = insider_match or (all_matches[0] if all_matches else None)
+    insider_flag = bool(insider_match)
 
     # Mark all currently-fetched items as seen, regardless of action,
     # so we don't re-process them on the next run.
@@ -321,8 +405,9 @@ def main():
         save_json(DATA_DIR / "monitor-public.json", monitor_state)
         return
 
-    print(f"[match] {candidate['feed']} :: {candidate['title']}")
-    text = generate_alert(candidate)
+    flag_str = "INSIDER" if insider_flag else "cycle"
+    print(f"[match · {flag_str}] {candidate['feed']} :: {candidate['title']}")
+    text = generate_alert(candidate, insider_flag=insider_flag)
     print(f"[generated] {text}")
 
     result = post_to_x(text)
@@ -330,13 +415,14 @@ def main():
 
     # record
     alert_entry = {
-        "id": f"ALERT/{(len(alerts) + 1):04d}",
+        "id": f"{'INSIDER' if insider_flag else 'ALERT'}/{(len(alerts) + 1):04d}",
         "time": utc_now().strftime("%Y-%m-%d %H:%M UTC"),
         "body": text,
         "tweet_url": result.get("url", ""),
         "source_feed": candidate["feed"],
         "source_url": candidate["link"],
         "source_title": candidate["title"],
+        "insider": insider_flag,
     }
     alerts.insert(0, alert_entry)
     alerts = alerts[:100]
