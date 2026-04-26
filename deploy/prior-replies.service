@@ -1,0 +1,20 @@
+[Unit]
+Description=PRIOR · mentions reply engine · engages with worthy mentions
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=__PRIOR_USER__
+WorkingDirectory=__INSTALL_DIR__
+EnvironmentFile=__ENV_FILE__
+ExecStart=__INSTALL_DIR__/.venv/bin/python __INSTALL_DIR__/scripts/replies.py
+ExecStartPost=/bin/bash __INSTALL_DIR__/deploy/push-data.sh
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=__INSTALL_DIR__
+PrivateTmp=true
+
+StandardOutput=journal
+StandardError=journal

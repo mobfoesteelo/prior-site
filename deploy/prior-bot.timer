@@ -1,0 +1,14 @@
+[Unit]
+Description=PRIOR · X-posting bot · 4-hour cadence
+Requires=prior-bot.service
+
+[Timer]
+# every 4 hours, at :17 past the hour
+OnCalendar=*-*-* 00,04,08,12,16,20:17:00
+# run on boot if the timer was missed
+Persistent=true
+RandomizedDelaySec=180
+Unit=prior-bot.service
+
+[Install]
+WantedBy=timers.target

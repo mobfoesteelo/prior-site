@@ -1,0 +1,13 @@
+[Unit]
+Description=PRIOR · reply engine · 30-minute cadence
+Requires=prior-replies.service
+
+[Timer]
+# every 30 minutes
+OnCalendar=*:0/30
+Persistent=false
+RandomizedDelaySec=90
+Unit=prior-replies.service
+
+[Install]
+WantedBy=timers.target

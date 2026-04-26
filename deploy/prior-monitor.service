@@ -1,0 +1,20 @@
+[Unit]
+Description=PRIOR · live cycle-pattern monitor (RSS + on-chain + regulatory)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=__PRIOR_USER__
+WorkingDirectory=__INSTALL_DIR__
+EnvironmentFile=__ENV_FILE__
+ExecStart=__INSTALL_DIR__/.venv/bin/python __INSTALL_DIR__/scripts/live_monitor.py
+ExecStartPost=/bin/bash __INSTALL_DIR__/deploy/push-data.sh
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=__INSTALL_DIR__
+PrivateTmp=true
+
+StandardOutput=journal
+StandardError=journal

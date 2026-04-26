@@ -1,0 +1,12 @@
+[Unit]
+Description=PRIOR · daily backrooms generation · 03:11 UTC
+Requires=prior-backrooms.service
+
+[Timer]
+OnCalendar=*-*-* 03:11:00
+Persistent=true
+RandomizedDelaySec=600
+Unit=prior-backrooms.service
+
+[Install]
+WantedBy=timers.target

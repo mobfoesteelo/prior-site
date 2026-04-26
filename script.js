@@ -160,3 +160,51 @@ function escapeHtml(s) {
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 }
+
+// ── ALERT FEED (live monitor) ──
+(async () => {
+  const feed = document.getElementById('alert-feed');
+  if (!feed) return;
+  try {
+    const [aRes, sRes] = await Promise.all([
+      fetch('/data/alerts.json', { cache: 'no-store' }),
+      fetch('/data/monitor-public.json', { cache: 'no-store' }),
+    ]);
+
+    if (sRes.ok) {
+      const s = await sRes.json();
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      if (s.status)         set('monitor-status', s.status);
+      if (s.feeds_count)    set('feeds-count', String(s.feeds_count));
+      if (s.alerts_count != null) set('alerts-count', String(s.alerts_count));
+      if (s.last_check_at) {
+        try { set('last-check', new Date(s.last_check_at).toISOString().replace('T',' ').slice(0,16) + ' UTC'); }
+        catch { set('last-check', s.last_check_at); }
+      }
+    }
+
+    if (!aRes.ok) return;
+    const alerts = await aRes.json();
+    if (!Array.isArray(alerts) || !alerts.length) return;
+
+    feed.innerHTML = '';
+    alerts.slice(0, 20).forEach(a => {
+      const art = document.createElement('article');
+      art.className = 'post post-alert';
+      const body = (a.body || '').split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('');
+      const sourceLine = a.source_feed
+        ? `<p class="post-source">~ source: ${escapeHtml(a.source_feed)} · <a href="${escapeHtml(a.source_url || '#')}" target="_blank" rel="noopener">${escapeHtml((a.source_title || '').slice(0, 80))}${(a.source_title || '').length > 80 ? '…' : ''}</a></p>`
+        : '';
+      art.innerHTML = `
+        <header>
+          <span class="post-id alert-id">${escapeHtml(a.id || 'ALERT')}</span>
+          <span class="post-time">${escapeHtml(a.time || '')}</span>
+        </header>
+        ${body}
+        ${sourceLine}
+        <p class="post-sig">— prior · informant</p>
+      `;
+      feed.appendChild(art);
+    });
+  } catch { /* keep hardcoded */ }
+})();

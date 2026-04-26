@@ -1,0 +1,13 @@
+[Unit]
+Description=PRIOR · live monitor · 15-minute cadence
+Requires=prior-monitor.service
+
+[Timer]
+# every 15 minutes
+OnCalendar=*:0/15
+Persistent=false
+RandomizedDelaySec=60
+Unit=prior-monitor.service
+
+[Install]
+WantedBy=timers.target

@@ -1,10 +1,10 @@
 name: prior.agent
 
 on:
-  # Roughly every 4 hours (6 posts/day — well under X Free tier 17/day limit)
-  schedule:
-    - cron: '17 */4 * * *'
-  # Manual trigger from GitHub UI
+  # NOTE: schedule disabled — Hetzner VPS is the primary runtime now
+  # (see deploy/prior-bot.timer). This workflow is kept for manual fallback only.
+  # schedule:
+  #   - cron: '17 */4 * * *'
   workflow_dispatch:
     inputs:
       dry_run:

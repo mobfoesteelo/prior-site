@@ -1,9 +1,10 @@
 name: prior.backrooms
 
 on:
-  # Daily — one new self-conversation per day, 03:11 UTC
-  schedule:
-    - cron: '11 3 * * *'
+  # NOTE: schedule disabled — Hetzner VPS is the primary runtime now
+  # (see deploy/prior-backrooms.timer). This workflow is kept for manual fallback only.
+  # schedule:
+  #   - cron: '11 3 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
