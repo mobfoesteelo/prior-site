@@ -252,6 +252,29 @@ nav {
 }
 .hero-title .h1-caret { color: var(--amber); margin-right: 12px; text-shadow: 0 0 20px var(--amber); }
 .hero-title .h1-cursor { color: var(--phos); animation: blink 0.8s infinite; margin-left: 6px; }
+.hero-defs {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  color: var(--paper);
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+}
+.hero-defs p { margin: 0; }
+.def-tag {
+  color: var(--phos);
+  text-shadow: 0 0 6px rgba(0, 255, 102, 0.4);
+  font-weight: 700;
+}
+.def-pos {
+  color: var(--amber);
+  font-style: italic;
+  margin: 0 6px;
+  opacity: 0.85;
+}
 .hero-tagline {
   font-family: 'JetBrains Mono', monospace;
   font-size: clamp(1.1rem, 1.8vw, 1.45rem);
