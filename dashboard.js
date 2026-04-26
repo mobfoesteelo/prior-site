@@ -74,11 +74,11 @@ updateClock();
 
 // ── engine status ──────────────────────────────────────────────────
 const ENGINES = [
-  { id: 'agent',     name: 'prior.agent',     cap: 6,  workflow: 'prior-bot.yml',       cron: 'every 4h · :17',    paused: false },
-  { id: 'memes',     name: 'prior.memes',     cap: 3,  workflow: 'prior-memes.yml',     cron: 'every 8h · :42',    paused: false },
-  { id: 'monitor',   name: 'prior.monitor',   cap: 4,  workflow: 'prior-monitor.yml',   cron: 'every 15m',         paused: false },
-  { id: 'replies',   name: 'prior.replies',   cap: 8,  workflow: 'prior-replies.yml',   cron: 'every 30m',         paused: true },
-  { id: 'backrooms', name: 'prior.backrooms', cap: 1,  workflow: 'prior-backrooms.yml', cron: 'daily · 03:11 UTC', paused: false },
+  { id: 'agent',     name: 'prior.agent',     cap: 6,  workflow: 'prior-bot.yml',       cron: 'every 4h · :17',          paused: false },
+  { id: 'memes',     name: 'prior.memes',     cap: 3,  workflow: 'prior-memes.yml',     cron: 'every 8h · :42',          paused: false },
+  { id: 'monitor',   name: 'prior.monitor',   cap: 4,  workflow: 'prior-monitor.yml',   cron: 'every 15m',               paused: false },
+  { id: 'replies',   name: 'prior.replies',   cap: 12, workflow: 'prior-replies.yml',   cron: 'every 15m',               paused: false },
+  { id: 'backrooms', name: 'prior.backrooms', cap: 4,  workflow: 'prior-backrooms.yml', cron: '4×/day · 3/9/15/21 UTC',  paused: false },
 ];
 
 const renderEngines = (data) => {
@@ -104,7 +104,8 @@ const renderEngines = (data) => {
     `;
     grid.appendChild(card);
   });
-  $('#engines-sub').textContent = `4 engines · all paused (X verification)`;
+  const liveCount = ENGINES.filter(e => data[e.id].status === 'live').length;
+  $('#engines-sub').textContent = `${liveCount}/${ENGINES.length} engines live · ${ENGINES.length - liveCount} other`;
 };
 
 // ── posts ──────────────────────────────────────────────────────────
@@ -312,16 +313,24 @@ async function refresh() {
       .sort((a, b) => new Date(b.run_started_at) - new Date(a.run_started_at));
   });
 
-  // Engine status synthesis
+  // Engine status synthesis — derive from actual run history
   const engineData = {};
   ENGINES.forEach(e => {
     const runs = runsByWorkflow[e.id] || [];
     const last = runs[0];
-    let status = 'paused';
+    let status;
     let note = '';
-    if (e.id === 'replies' && last && last.conclusion === 'failure') {
+    if (e.paused) {
+      status = 'paused';
+    } else if (!last) {
+      // No runs yet but schedule live → first run pending
+      status = 'live';
+      note = 'awaiting first scheduled run';
+    } else if (last.conclusion === 'failure') {
       status = 'blocked';
-      note = 'X auth (verification pending)';
+      note = 'last run failed — see github actions';
+    } else {
+      status = 'live';
     }
     engineData[e.id] = {
       status,
