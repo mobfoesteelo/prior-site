@@ -63,15 +63,14 @@ In `.github/workflows/prior-bot.yml`, the schedule runs every 4 hours. Push once
 
 Manual run anytime: GitHub → Actions tab → **prior.agent** → Run workflow.
 
-### 6. When you mint the coin
+### 6. Launched
 
-Find-replace `TBA_CONTRACT_ADDRESS_HERE` in `index.html` (2 occurrences) with your pump.fun CA, then:
+- **CA:** `E5X3t2AFxcM6RcMM8BN5xnYscE3RzHHmzVmuQ1Ggpump`
+- **pump.fun:** https://pump.fun/coin/E5X3t2AFxcM6RcMM8BN5xnYscE3RzHHmzVmuQ1Ggpump
+- **Dev wallet:** `3SmrRbYpN7PVfdPpkwcByzwouaESoetmhxrRoFpa5YLU`
+- **Launched:** 2026-04-26
 
-```bash
-npx vercel --prod --yes
-```
-
-Pump.fun buttons auto-link to `https://pump.fun/coin/<CA>`.
+CA + buy links are wired into `index.html` (2 places). Bot system prompt + replies prompt include CA awareness so PRIOR drops it cleanly when asked, never as a billboard.
 
 ---
 
