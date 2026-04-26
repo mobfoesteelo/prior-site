@@ -224,7 +224,7 @@ Stay under 240 characters TOTAL (including the URL)."""
 
 
 def post_to_x(text):
-    if os.environ.get("PRIOR_MONITOR_DRY_RUN") == "1":
+    if os.environ.get("PRIOR_MONITOR_DRY_RUN") == "1" or os.environ.get("PRIOR_DRY_RUN") == "1":
         return {"id": "dry-run", "url": "", "text": text}
 
     try:

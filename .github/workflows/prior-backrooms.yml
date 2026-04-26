@@ -1,10 +1,9 @@
 name: prior.backrooms
 
 on:
-  # NOTE: schedule disabled — Hetzner VPS is the primary runtime now
-  # (see deploy/prior-backrooms.timer). This workflow is kept for manual fallback only.
-  # schedule:
-  #   - cron: '11 3 * * *'
+  # Daily — one new self-conversation per day, 03:11 UTC
+  schedule:
+    - cron: '11 3 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -18,6 +17,10 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  group: prior-backrooms
+  cancel-in-progress: false
 
 jobs:
   generate:
@@ -48,6 +51,7 @@ jobs:
         run: |
           git config user.name  "prior.backrooms"
           git config user.email "prior-bot@users.noreply.github.com"
+          git pull --rebase --autostash origin main || true
           if [[ -n "$(git status --porcelain data/backrooms.json)" ]]; then
             git add data/backrooms.json
             git commit -m "backrooms: $(date -u +'%Y-%m-%d') · self-conversation archived"

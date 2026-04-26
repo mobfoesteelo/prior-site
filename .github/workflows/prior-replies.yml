@@ -1,27 +1,25 @@
-name: prior.agent
+name: prior.replies
 
 on:
-  # Roughly every 4 hours (6 posts/day — well under X Free tier 17/day limit)
+  # Every 30 minutes — engage worthy mentions
   schedule:
-    - cron: '17 */4 * * *'
-  # Manual trigger from GitHub UI
+    - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Dry run (no actual X post)'
+        description: 'Dry run (classify but do not post)'
         required: false
         default: 'false'
 
-# Allow committing the updated data/log.json back to the repo
 permissions:
   contents: write
 
 concurrency:
-  group: prior-bot
+  group: prior-replies
   cancel-in-progress: false
 
 jobs:
-  post:
+  reply:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,7 +35,7 @@ jobs:
       - name: Install deps
         run: pip install -r scripts/requirements.txt
 
-      - name: Run prior_bot.py
+      - name: Run replies.py
         env:
           ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
           X_API_KEY:             ${{ secrets.X_API_KEY }}
@@ -45,18 +43,18 @@ jobs:
           X_ACCESS_TOKEN:        ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
           PRIOR_DRY_RUN:         ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
-        run: python scripts/prior_bot.py
+        run: python scripts/replies.py
 
-      - name: Commit updated log
+      - name: Commit updates
         if: github.event.inputs.dry_run != 'true'
         run: |
-          git config user.name  "prior.agent"
+          git config user.name  "prior.replies"
           git config user.email "prior-bot@users.noreply.github.com"
           git pull --rebase --autostash origin main || true
-          if [[ -n "$(git status --porcelain data/log.json)" ]]; then
-            git add data/log.json
-            git commit -m "prior: log update $(date -u +'%Y-%m-%dT%H:%MZ')"
+          if [[ -n "$(git status --porcelain data/)" ]]; then
+            git add data/
+            git commit -m "replies: $(date -u +'%Y-%m-%dT%H:%MZ')"
             git push
           else
-            echo "no changes to log"
+            echo "no changes"
           fi
