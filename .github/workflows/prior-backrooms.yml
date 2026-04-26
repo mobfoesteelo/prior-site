@@ -1,9 +1,10 @@
 name: prior.backrooms
 
 on:
-  # LIVE: daily 03:11 UTC self-conversation archive
+  # LIVE: twice-daily self-conversation archive
+  # 03:11 UTC (early morning) + 15:11 UTC (afternoon)
   schedule:
-    - cron: '11 3 * * *'
+    - cron: '11 3,15 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
