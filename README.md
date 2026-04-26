@@ -65,8 +65,8 @@ Manual run anytime: GitHub → Actions tab → **prior.agent** → Run workflow.
 
 ### 6. Launched
 
-- **CA:** `E5X3t2AFxcM6RcMM8BN5xnYscE3RzHHmzVmuQ1Ggpump`
-- **pump.fun:** https://pump.fun/coin/E5X3t2AFxcM6RcMM8BN5xnYscE3RzHHmzVmuQ1Ggpump
+- **CA:** `6JMRacQ3JJdTNQ1qtg59f8h91aAPMjNhTtkixQHDpump`
+- **pump.fun:** https://pump.fun/coin/6JMRacQ3JJdTNQ1qtg59f8h91aAPMjNhTtkixQHDpump
 - **Dev wallet:** `3SmrRbYpN7PVfdPpkwcByzwouaESoetmhxrRoFpa5YLU`
 - **Launched:** 2026-04-26
 
