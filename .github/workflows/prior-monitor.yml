@@ -1,9 +1,10 @@
 name: prior.monitor
 
 on:
-  # Every 15 minutes — RSS poll for cycle-pattern triggers
-  schedule:
-    - cron: '*/15 * * * *'
+  # PAUSED: schedule disabled while X account is in verification.
+  # Re-enable by uncommenting the schedule block below.
+  # schedule:
+  #   - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:

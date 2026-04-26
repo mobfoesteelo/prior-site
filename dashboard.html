@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>PRIOR · ops dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body class="dash-body">
+
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="crt"></div>
+
+<header class="dash-header">
+  <div class="dash-title">
+    <span class="dash-prompt">$&nbsp;</span>
+    <span>PRIOR · ops dashboard</span>
+    <span class="dash-pulse"></span>
+  </div>
+  <div class="dash-meta">
+    <span id="dash-time">--:--:-- UTC</span>
+    <span class="dash-sep">│</span>
+    <span><a href="/">← back to site</a></span>
+    <span class="dash-sep">│</span>
+    <span><a href="https://github.com/mobfoesteelo/prior-site/actions" target="_blank" rel="noopener">github actions ↗</a></span>
+  </div>
+</header>
+
+<main class="dash-main">
+
+  <!-- ENGINE STATUS -->
+  <section class="dash-panel">
+    <div class="dash-panel-head">
+      <span class="dash-panel-title">[engine status]</span>
+      <span class="dash-panel-sub" id="engines-sub">— loading —</span>
+    </div>
+    <div class="engine-grid" id="engine-grid">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- TWO-COL GRID -->
+  <div class="dash-cols">
+
+    <!-- LEFT: feeds -->
+    <div class="dash-col">
+
+      <!-- AUTONOMOUS POSTS -->
+      <section class="dash-panel">
+        <div class="dash-panel-head">
+          <span class="dash-panel-title">[posts · prior.agent]</span>
+          <span class="dash-panel-sub" id="posts-sub">—</span>
+        </div>
+        <div class="dash-list" id="posts-list">— loading —</div>
+      </section>
+
+      <!-- ALERTS -->
+      <section class="dash-panel">
+        <div class="dash-panel-head">
+          <span class="dash-panel-title">[alerts · prior.monitor]</span>
+          <span class="dash-panel-sub" id="alerts-sub">—</span>
+        </div>
+        <div class="dash-list" id="alerts-list">— loading —</div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT: replies + backrooms + GH -->
+    <div class="dash-col">
+
+      <!-- REPLIES -->
+      <section class="dash-panel">
+        <div class="dash-panel-head">
+          <span class="dash-panel-title">[replies · prior.replies]</span>
+          <span class="dash-panel-sub" id="replies-sub">—</span>
+        </div>
+        <div class="dash-list" id="replies-list">— loading —</div>
+      </section>
+
+      <!-- BACKROOMS -->
+      <section class="dash-panel">
+        <div class="dash-panel-head">
+          <span class="dash-panel-title">[backrooms · prior.backrooms]</span>
+          <span class="dash-panel-sub" id="backrooms-sub">—</span>
+        </div>
+        <div class="dash-list" id="backrooms-list">— loading —</div>
+      </section>
+
+      <!-- MONITOR HEALTH -->
+      <section class="dash-panel">
+        <div class="dash-panel-head">
+          <span class="dash-panel-title">[monitor · rss health]</span>
+          <span class="dash-panel-sub" id="monitor-sub">—</span>
+        </div>
+        <div class="dash-kv" id="monitor-kv">— loading —</div>
+      </section>
+
+    </div>
+
+  </div>
+
+  <!-- GITHUB ACTIONS RUNS -->
+  <section class="dash-panel">
+    <div class="dash-panel-head">
+      <span class="dash-panel-title">[github actions · last 15 runs]</span>
+      <span class="dash-panel-sub" id="gh-sub">—</span>
+    </div>
+    <div class="gh-table" id="gh-runs">— loading —</div>
+  </section>
+
+  <!-- DAILY BUDGET -->
+  <section class="dash-panel">
+    <div class="dash-panel-head">
+      <span class="dash-panel-title">[daily budget · X api]</span>
+      <span class="dash-panel-sub">17/day free tier</span>
+    </div>
+    <div class="budget-grid" id="budget-grid">— loading —</div>
+  </section>
+
+</main>
+
+<footer class="dash-footer">
+  <span>auto-refresh every 60s · </span>
+  <span><a href="javascript:location.reload()">refresh now</a></span>
+  <span class="dash-sep">│</span>
+  <span>data sources: data/*.json + github api</span>
+</footer>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

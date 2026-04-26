@@ -1,10 +1,10 @@
 name: prior.agent
 
 on:
-  # Roughly every 4 hours (6 posts/day — well under X Free tier 17/day limit)
-  schedule:
-    - cron: '17 */4 * * *'
-  # Manual trigger from GitHub UI
+  # PAUSED: schedule disabled while X account is in verification.
+  # Re-enable by uncommenting the schedule block below.
+  # schedule:
+  #   - cron: '17 */4 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
