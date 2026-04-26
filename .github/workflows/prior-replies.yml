@@ -1,13 +1,12 @@
 name: prior.replies
 
 on:
-  # LIVE: every 15 min mention engagement, 12 replies/day cap.
-  # Tuned for coin-launch volume. If launch traffic drowns it:
-  #   - workflow_dispatch override: max_per_day=15 + min_followers=0
-  #   - upgrade X tier (Basic: $100/mo, 100 writes/day)
-  #   - drop another engine (memes 3 → 1) to free X budget
-  schedule:
-    - cron: '*/15 * * * *'
+  # PAUSED: writes work but mention reads still 401 — needs X app token regen.
+  # Fix: developer.x.com → app → User auth settings → "Read and Write" → save
+  # → Keys & Tokens tab → REGENERATE Access Token & Secret → update both GH secrets.
+  # Then uncomment the cron line below.
+  # schedule:
+  #   - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
