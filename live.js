@@ -9,7 +9,7 @@
  */
 
 const REPO = 'mobfoesteelo/prior-site';
-const REFRESH_MS = 30_000;       // pull data every 30s
+const REFRESH_MS = 60_000;       // pull data every 60s — keeps the page well under GitHub Actions API rate limit (60 req/hr unauth) for long streams
 const NOW_TYPE_MS = 22;          // typewriter speed (ms per char)
 const NOW_HOLD_MS = 11_000;      // dwell on each "now posting" before rotating
 
