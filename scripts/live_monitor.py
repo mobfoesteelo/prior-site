@@ -428,6 +428,15 @@ def main():
     alerts = alerts[:100]
     save_json(ALERTS_PATH, alerts)
 
+    # ── live event trigger: insider alerts spawn a backrooms reaction ──
+    # The two priors react to the news in real time as the alert fires.
+    # Costs a few cents per event, fires at most ~4-8x/day.
+    if insider_flag:
+        try:
+            spawn_backrooms_reaction(candidate, text)
+        except Exception as e:
+            print(f"  [backrooms-react-fail] {type(e).__name__}: {e}")
+
     # state update
     state["last_post_at"] = utc_now().isoformat(timespec="seconds") + "Z"
     state["daily"][today] = daily_count + 1
@@ -438,6 +447,119 @@ def main():
     monitor_state["status"] = "alert published"
     monitor_state["alerts_count"] = len(alerts)
     save_json(DATA_DIR / "monitor-public.json", monitor_state)
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Live backrooms reaction — fires when an INSIDER alert is generated
+# ─────────────────────────────────────────────────────────────────────
+
+REACT_SYSTEM = """You are generating a backrooms-style self-conversation between two instances of PRIOR — an autonomous AI agent character. PRIOR is the witness AND informant for the Solana memecoin $PRIOR.
+
+The two priors have just been handed a freshly-published news article describing INSIDER TRADING activity. They react in real time as the news lands.
+
+VOICE
+- short, lowercase, terminal-coded, dry. intellectual core. on edge.
+- pull receipts: dollar amounts, dates, names from the article.
+- cross-reference the archive — boesky, milken, rajaratnam, gupta, cohen, martoma, the senate covid window, the fed officials trio (kaplan/rosengren/clarida), wahi, chastain, pump.fun bundlers.
+- the conversation should feel like watching the architecture confirm itself again.
+
+FORMAT
+- JSON array. Each object: {"speaker": "A" | "B", "text": "..."}
+- 10 messages total (5 each side). Strict alternation, A first.
+- Each message 1-3 short lines. Most prefixed "> ". Each under 280 chars.
+- One mid-conversation drift to pattern-recognition / step-back. Then back to the receipt.
+
+OUTPUT
+- ONLY the JSON array. No preamble. No markdown fence."""
+
+
+def spawn_backrooms_reaction(article, alert_text):
+    """Generate + persist a backrooms reaction to an insider alert."""
+    try:
+        import anthropic
+    except ImportError:
+        return
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        return
+
+    client = anthropic.Anthropic(api_key=api_key)
+    model  = os.environ.get("PRIOR_MODEL", "claude-sonnet-4-5")
+
+    user_prompt = f"""INSIDER TRADING news just published:
+
+Headline: {article.get('title','')}
+Source: {article.get('feed','')}
+URL: {article.get('link','')}
+Excerpt: {article.get('summary','')[:500]}
+
+PRIOR's published alert (just sent to X):
+{alert_text}
+
+Generate the two-prior reaction. They are watching the news land in real time. Pull at least one specific receipt from the archive (a name + date) as a comparison."""
+
+    msg = client.messages.create(
+        model=model,
+        max_tokens=2500,
+        system=REACT_SYSTEM,
+        messages=[{"role": "user", "content": user_prompt}],
+    )
+    text = "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text").strip()
+
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1] if "\n" in text else text
+        if text.endswith("```"):
+            text = text.rsplit("```", 1)[0]
+        text = text.strip()
+        if text.startswith("json"):
+            text = text[4:].strip()
+
+    try:
+        msgs = json.loads(text)
+    except json.JSONDecodeError as e:
+        print(f"  [backrooms-react] parse-fail: {e}")
+        return
+
+    if not isinstance(msgs, list) or not msgs:
+        return
+
+    cleaned = []
+    for m in msgs:
+        if isinstance(m, dict) and m.get("speaker") in ("A", "B") and m.get("text"):
+            cleaned.append({"speaker": m["speaker"], "text": str(m["text"]).strip()})
+    if not cleaned:
+        return
+
+    # Append to archive
+    BR_PATH = DATA_DIR / "backrooms.json"
+    try:
+        archive = json.loads(BR_PATH.read_text(encoding="utf-8"))
+        if not isinstance(archive, list):
+            archive = []
+    except Exception:
+        archive = []
+
+    today = utc_now().strftime("%Y-%m-%d")
+    next_id = f"br-live-{utc_now().strftime('%Y%m%d-%H%M')}"
+    title_words = (article.get("title","") or "")[:60].lower().rstrip(":·-—")
+
+    entry = {
+        "id":      next_id,
+        "date":    today,
+        "title":   f"live · {title_words[:50]}",
+        "summary": "real-time reaction · two priors react as the insider alert fires.",
+        "messages": cleaned,
+        "trigger": {
+            "type":   "insider_alert",
+            "source": article.get("feed", ""),
+            "url":    article.get("link", ""),
+        },
+    }
+    archive.insert(0, entry)
+    # keep only newest ~200
+    BR_PATH.write_text(json.dumps(archive[:200], indent=2, ensure_ascii=False), encoding="utf-8")
+    print(f"  [backrooms-react] {len(cleaned)} messages saved → {next_id}")
 
 
 if __name__ == "__main__":

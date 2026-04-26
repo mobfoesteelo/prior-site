@@ -1,0 +1,45 @@
+name: prior.backfill
+
+# One-off historical backrooms backfill. Generates ~20 PRIOR-vs-PRIOR
+# conversations dated to real scandal/event dates. Skips entries already
+# present in data/backrooms.json — safe to re-run.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (list events, do not generate)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+      - run: pip install -r scripts/requirements.txt
+      - name: Generate backfill
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PRIOR_BR_DRY_RUN:  ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
+        run: python scripts/backfill_backrooms.py
+      - name: Commit
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name  "prior.backrooms"
+          git config user.email "prior-bot@users.noreply.github.com"
+          git pull --rebase --autostash origin main || true
+          if [[ -n "$(git status --porcelain data/backrooms.json)" ]]; then
+            git add data/backrooms.json
+            git commit -m "backrooms: historical backfill · ~20 entries dated to real events"
+            git push
+          fi
