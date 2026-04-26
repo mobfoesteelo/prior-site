@@ -2,15 +2,28 @@ name: prior.replies
 
 on:
   # PAUSED: schedule disabled while X account is in verification.
-  # Re-enable by uncommenting the schedule block below.
+  # Re-enable by uncommenting the */15 line below once X clears.
+  # AT LAUNCH: this is tuned for high-volume mention engagement (every 15m,
+  # 12 replies/day). If launch traffic still drowns it, options:
+  #   - workflow_dispatch override: max_per_day=15 + min_followers=0
+  #   - upgrade X tier (Basic: $100/mo, 100 writes/day)
+  #   - drop another engine (memes 3 → 1) to free X budget
   # schedule:
-  #   - cron: '*/30 * * * *'
+  #   - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
         description: 'Dry run (classify but do not post)'
         required: false
         default: 'false'
+      max_per_day:
+        description: 'Override daily reply cap (default 12)'
+        required: false
+        default: '12'
+      min_followers:
+        description: 'Min follower count to engage (default 10, set 0 at launch)'
+        required: false
+        default: '10'
 
 permissions:
   contents: write
@@ -38,12 +51,14 @@ jobs:
 
       - name: Run replies.py
         env:
-          ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
-          X_API_KEY:             ${{ secrets.X_API_KEY }}
-          X_API_SECRET:          ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN:        ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-          PRIOR_DRY_RUN:         ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
+          ANTHROPIC_API_KEY:               ${{ secrets.ANTHROPIC_API_KEY }}
+          X_API_KEY:                       ${{ secrets.X_API_KEY }}
+          X_API_SECRET:                    ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN:                  ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET:           ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          PRIOR_DRY_RUN:                   ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
+          PRIOR_REPLIES_MAX_PER_DAY:       ${{ github.event.inputs.max_per_day || '12' }}
+          PRIOR_REPLIES_MIN_FOLLOWERS:     ${{ github.event.inputs.min_followers || '10' }}
         run: python scripts/replies.py
 
       - name: Commit updates

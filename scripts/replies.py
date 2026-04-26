@@ -236,7 +236,7 @@ def main():
 
     today = utc_today()
     daily_count = state["daily"].get(today, 0)
-    max_per_day = int(os.environ.get("PRIOR_REPLIES_MAX_PER_DAY", "8"))
+    max_per_day = int(os.environ.get("PRIOR_REPLIES_MAX_PER_DAY", "12"))
     min_followers = int(os.environ.get("PRIOR_REPLIES_MIN_FOLLOWERS", "10"))
     min_age_days  = int(os.environ.get("PRIOR_REPLIES_MIN_ACCOUNT_AGE_DAYS", "14"))
     dry = os.environ.get("PRIOR_REPLIES_DRY_RUN") == "1" or os.environ.get("PRIOR_DRY_RUN") == "1"
