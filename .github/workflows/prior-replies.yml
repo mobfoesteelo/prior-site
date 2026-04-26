@@ -1,15 +1,13 @@
 name: prior.replies
 
 on:
-  # PAUSED: schedule disabled while X account is in verification.
-  # Re-enable by uncommenting the */15 line below once X clears.
-  # AT LAUNCH: this is tuned for high-volume mention engagement (every 15m,
-  # 12 replies/day). If launch traffic still drowns it, options:
+  # LIVE: every 15 min mention engagement, 12 replies/day cap.
+  # Tuned for coin-launch volume. If launch traffic drowns it:
   #   - workflow_dispatch override: max_per_day=15 + min_followers=0
   #   - upgrade X tier (Basic: $100/mo, 100 writes/day)
   #   - drop another engine (memes 3 → 1) to free X budget
-  # schedule:
-  #   - cron: '*/15 * * * *'
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
