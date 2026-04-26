@@ -11,6 +11,12 @@ const nextConfig = {
   webpack: (config) => {
     // some wallet-adapter packages reference node-only fs; stub it on the client
     config.resolve.fallback = { ...config.resolve.fallback, fs: false };
+    // pino (transitive from walletconnect) optionally requires pino-pretty;
+    // suppress the missing-module warning since we don't use pretty logging.
+    config.externals = [
+      ...(config.externals || []),
+      { 'pino-pretty': 'commonjs pino-pretty' },
+    ];
     return config;
   },
 };

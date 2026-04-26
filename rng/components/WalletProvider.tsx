@@ -14,8 +14,9 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
-  BackpackWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
+// Backpack is now detected automatically via the Wallet Standard (window.solana
+// providers) — no explicit adapter import needed in 2025+.
 
 import { RPC_URL } from "@/lib/constants";
 
@@ -28,7 +29,6 @@ export function WalletProviders({ children }: { children: React.ReactNode }) {
     () => [
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
-      new BackpackWalletAdapter(),
     ],
     [],
   );
