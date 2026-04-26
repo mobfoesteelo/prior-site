@@ -56,9 +56,22 @@ Pre-modern foundations:
     1910-11 — Jekyll Island secret meeting. Aldrich + Warburg + Davison + Vanderlip + Andrew + Shelton. Posed as duck hunters. Used first names. Drafted the Federal Reserve Act in private. Denied for 20 years.
     1913-12 — Federal Reserve Act signed by Wilson, Dec 23. Closely resembled the Aldrich Plan.
     1929-10 — Black Tuesday. DJIA -89% to 1932 trough. 9,000+ banks failed. 25% unemployment. Pecora Hearings exposed pool operators.
+Government & intelligence scandals:
+    1932-72 — Tuskegee. 600 men. 40 years of deliberate non-treatment of syphilis by US Public Health Service. ~100+ deaths. Penicillin available from 1947, denied. Whistleblower Peter Buxtun leaked 1972. Apology 1997.
+    1953-73 — MK-Ultra. 149 sub-projects across 80 institutions. Sidney Gottlieb. Frank Olson 1953 LSD-dosing death (re-examined 1994). Records destroyed by Helms 1973. 20,000 misfiled financial records survived; Church Committee 1975-76.
+    1956-71 — COINTELPRO. FBI illegal disruption of CRA, Black Panthers, antiwar movements. MLK "suicide letter" mailed by Bureau. Fred Hampton killed Dec 4 1969. Exposed by 1971 break-in at Media, PA office during Ali-Frazier fight.
     1961-01 — Eisenhower's farewell address. "military-industrial complex." The five-star general named the architecture on his way out.
+    1964-08 — Gulf of Tonkin. The August 4 attack never happened. NSA reports declassified 2005. ~58,000 US dead, ~3M Vietnamese dead.
     1971-08 — Nixon shock. Aug 15. Closed the gold window. Dollar became fiat.
+    1985-87 — Iran-Contra. Arms-for-hostages + Contra funding (both illegal). 11 convictions, 0 sentences served. Bush Sr. pardoned the principals 4 days before trial. Cheney drafted the minority report.
+    1986-89 — S&L crisis. 1,043 institutions failed. ~$160B taxpayer cost. Keating Five. Charles Keating: 4½ years.
     1987-10 — Black Monday. -22.6% one session. Program trading + portfolio insurance.
+    1991-07 — BCCI. $20B missing. CIA admitted holding accounts. Laundered for Saddam, Noriega, Medellín, Abu Nidal, Pakistani ISI. Regulators called it "Bank of Crooks and Criminals International."
+    1996-2024 — Sackler/Purdue/OxyContin. ~900,000 US dead since 1999 (incl. illicit). Family extracted ~$11B during 2008-2018 lawsuits window. SCOTUS overturned bankruptcy immunity June 2024 (Harrington v. Purdue Pharma). $7.4B settlement 2025.
+    2013-06 — Snowden. PRISM, NSA bulk metadata collection. Clapper had perjured under oath three months earlier; faced no consequence. Snowden charged under Espionage Act.
+    2016-04 — Panama Papers. 11.5M docs. 214,488 offshore entities. Heads of state named. ~$1.2B recovered. 2024: Mossack Fonseca founders acquitted in Panama.
+    2023-03 — banking crisis. SVB (3rd largest US bank failure ever), Signature, First Republic. $22B FDIC special assessment. Credit Suisse forced merger to UBS at -60% over a weekend.
+    2023-11 — Binance/CZ. Both pleaded guilty. $4.3B settlement. CZ stepped down, $50M personal fine, served 4 months.
 The financial-industrial era:
     2000-03 — dotcom. NASDAQ -78%. ~$5T wiped.
     2001-12 — Enron. $74B wiped. $1.1B in insider sales 1999-2001 while telling 401k employees to hold. Skilling/Lay/Fastow. Arthur Andersen dissolved. Grandma Millie tapes.
@@ -145,6 +158,16 @@ USER_PROMPTS = [
     "Post a 'macro' receipt about Madoff. Markopolos warned the SEC five times across 9 years. The regulator misplaced the receipts. Five times.",
     "Post a 'macro' receipt about LIBOR. ~$350T notional affected. ~$9B in fines. No senior executive charged.",
     "Post a 'macro' receipt about GameStop. Jan 28 2021. Robinhood disabled the buy button. Sworn denial of Citadel involvement. Class-action discovery showed otherwise.",
+    "Post a 'macro' receipt about Tuskegee. 600 men. 40-year non-treatment study. Penicillin denied for 25 years after it became standard. Ended only because someone leaked it.",
+    "Post a 'macro' receipt about MK-Ultra. CIA destroyed the records before the investigation. The investigation built its case from the misfiles.",
+    "Post a 'macro' receipt about COINTELPRO. The FBI mailed Martin Luther King a recording and a letter urging him to commit suicide. The letter is in the federal record.",
+    "Post a 'macro' receipt about Iran-Contra. 11 convictions. 0 sentences served. George H.W. Bush pardoned the principals four days before Caspar Weinberger's trial.",
+    "Post a 'macro' receipt about BCCI. The CIA held accounts at the bank that laundered money for Saddam Hussein, Manuel Noriega, the Medellín cartel, and Abu Nidal. The regulators called it the 'Bank of Crooks and Criminals International.'",
+    "Post a 'macro' receipt about the Sacklers. The family marketed an addictive drug as non-addictive for two decades. They kept enough of the money to fight the lawsuits with.",
+    "Post a 'macro' receipt about Panama Papers. 11.5 million documents. 214,488 entities. Heads of state named. ~$1.2 billion recovered against trillions of offshore wealth. Mossack Fonseca acquitted in 2024.",
+    "Post a 'macro' receipt about Snowden. The director of national intelligence perjured himself in front of Congress three months before the documents proved he was lying. Snowden faced charges. Clapper did not.",
+    "Post a 'macro' receipt about the 2023 banking crisis. Three U.S. banks failed in a week. The FDIC invoked the systemic risk exception again. Credit Suisse was force-merged into UBS over a weekend at -60%. Same architecture as 2008. Different costume.",
+    "Post a 'macro' receipt about Binance. The world's largest crypto exchange ran without an AML program. CZ stepped down, paid $50M personal fine, served 4 months. The exchange paid $4.3B and continued operating.",
     "Post a 'receipt' referencing MELANIA or TRUMP insider numbers with dry delivery.",
     "Post a 'receipt' referencing the pump.fun '5,000 messages' lawsuit.",
     "Post an 'observation' about presales, bundler wallets, or MEV.",

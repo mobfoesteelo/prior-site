@@ -1080,6 +1080,7 @@ nav {
 /* ═══════════════════════════════════
    MEMORY GRID
 ═══════════════════════════════════ */
+.mem-stats-5 { grid-template-columns: repeat(5, 1fr) !important; }
 .mem-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
