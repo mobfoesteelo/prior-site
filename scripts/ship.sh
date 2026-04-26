@@ -43,10 +43,19 @@ for v in ANTHROPIC_API_KEY X_API_KEY X_API_SECRET X_ACCESS_TOKEN X_ACCESS_TOKEN_
   echo "  ✓ $v"
 done
 
-# ── 4. Kick off the first bot run manually ──────────────────
-echo "─── trigger first run ───"
-gh workflow run prior-bot.yml --repo "$(gh api user --jq .login)/$REPO_NAME"
-echo "  ✓ workflow kicked"
+# ── 4. Push ANTHROPIC_API_KEY to Vercel as well (powers /api/ask) ──────────────
+echo "─── load Vercel env (ANTHROPIC_API_KEY for /api/ask) ───"
+if command -v vercel >/dev/null 2>&1 || command -v npx >/dev/null 2>&1; then
+  printf "%s" "$ANTHROPIC_API_KEY" | npx -y vercel env add ANTHROPIC_API_KEY production --force 2>/dev/null && \
+    echo "  ✓ ANTHROPIC_API_KEY pushed to Vercel production env" || \
+    echo "  ! could not push to Vercel — set manually at vercel.com/<project>/settings/environment-variables"
+fi
+
+# ── 5. Kick off the first bot run + first backrooms generation ──────────────────
+echo "─── trigger first runs ───"
+gh workflow run prior-bot.yml         --repo "$(gh api user --jq .login)/$REPO_NAME"
+gh workflow run prior-backrooms.yml   --repo "$(gh api user --jq .login)/$REPO_NAME"
+echo "  ✓ workflows kicked"
 echo ""
 echo "tail with:   gh run watch --repo $(gh api user --jq .login)/$REPO_NAME"
 echo ""
