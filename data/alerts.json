@@ -1,5 +1,16 @@
 [
   {
+    "id": "ALERT/0003",
+    "time": "2026-04-27 11:46 UTC",
+    "body": "> eu now escalating crypto sanctions on russia. pattern: state uses rails to evade, regulators respond by tightening rails for everyone. you pay the compliance cost.\n\nhttps://www.coindesk.com/policy/2026/04/27/eu-s-largest-measures-against-russia-yet-include-escalation-of-cryp...",
+    "tweet_url": "https://x.com/i/status/2048730466212077774",
+    "source_feed": "CoinDesk policy",
+    "source_url": "https://www.coindesk.com/policy/2026/04/27/eu-s-largest-measures-against-russia-yet-include-escalation-of-crypto-sanctions-evasion",
+    "source_title": "EU’s largest measures against Russia yet include escalation of crypto sanctions evasion",
+    "insider": false,
+    "breaking": false
+  },
+  {
     "id": "ALERT/0002",
     "time": "2026-04-26 20:30 UTC",
     "body": "> 22yo gets 70 months. $263m syndicate. prosecutors: \"greed so brazen it borders on the cartoonish.\" the lambo-buyers go down, the architects stay nameless. same movie, different cast.\n\nhttps://www.theblock.co/post/398899",
