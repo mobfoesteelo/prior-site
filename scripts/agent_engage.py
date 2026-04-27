@@ -341,36 +341,53 @@ def main():
             posted += 1
             continue
 
-        # post as a reply to the target's tweet
+        # Post as QUOTE-TWEET (better reach + bypasses reply-restrictions
+        # that some accounts use, e.g. aixbt's "only mentioned can reply").
+        # Falls back to a reply if quote fails for some reason.
+        engagement_kind = "quote"
         try:
-            r = write.create_tweet(text=reply_text, in_reply_to_tweet_id=int(candidate.id))
+            r = write.create_tweet(text=reply_text, quote_tweet_id=str(candidate.id))
             posted_id = str(r.data["id"]) if r and r.data else ""
             url = f"https://x.com/i/status/{posted_id}" if posted_id else ""
-            entry = {
-                "id":          f"ENG/{(len(log) + 1):04d}",
-                "time":        utc_now().strftime("%Y-%m-%d %H:%M UTC"),
-                "target":      handle,
-                "to_tweet":    str(candidate.id),
-                "to_text":     (candidate.text or "")[:240],
-                "body":        reply_text,
-                "tweet_url":   url,
-                "reason":      reason,
-            }
-            log.insert(0, entry)
-            log = log[:200]
-            save_json(ENGAGE_LOG_PATH, log)
+            print(f"    [quote-posted] {url}")
+        except Exception as e_quote:
+            err_str = str(e_quote)[:200]
+            print(f"    [quote-fail] {type(e_quote).__name__}: {err_str}")
+            # try reply as fallback
+            try:
+                r = write.create_tweet(text=reply_text, in_reply_to_tweet_id=int(candidate.id))
+                posted_id = str(r.data["id"]) if r and r.data else ""
+                url = f"https://x.com/i/status/{posted_id}" if posted_id else ""
+                engagement_kind = "reply"
+                print(f"    [reply-posted] {url}")
+            except Exception as e_reply:
+                err_str2 = str(e_reply)[:200]
+                print(f"    [reply-fail] {type(e_reply).__name__}: {err_str2}")
+                # Both modes failed. If it's a 403 (e.g. CA filter, restricted),
+                # don't keep trying this tweet — mark as handled.
+                if "403" in err_str2 or "403" in err_str or "Forbidden" in err_str2:
+                    handled.add(str(candidate.id))
+                continue
 
-            handled.add(str(candidate.id))
-            state.setdefault("last_per_target", {})[handle] = utc_now().isoformat()
-            posted += 1
-            print(f"    [posted] {url}")
-        except Exception as e:
-            err_str = str(e)[:200]
-            print(f"    [post-fail] {type(e).__name__}: {err_str}")
-            # if it's the X 7-day CA filter (403), the reply hit a banned-pattern.
-            # Don't add to handled — let next run try a different post from this target.
-            if "403" not in err_str and "Forbidden" not in err_str:
-                handled.add(str(candidate.id))
+        # success path (quote OR reply landed)
+        entry = {
+            "id":          f"ENG/{(len(log) + 1):04d}",
+            "time":        utc_now().strftime("%Y-%m-%d %H:%M UTC"),
+            "target":      handle,
+            "kind":        engagement_kind,
+            "to_tweet":    str(candidate.id),
+            "to_text":     (candidate.text or "")[:240],
+            "body":        reply_text,
+            "tweet_url":   url,
+            "reason":      reason,
+        }
+        log.insert(0, entry)
+        log = log[:200]
+        save_json(ENGAGE_LOG_PATH, log)
+
+        handled.add(str(candidate.id))
+        state.setdefault("last_per_target", {})[handle] = utc_now().isoformat()
+        posted += 1
 
     # persist state
     state["handled_tweet_ids"] = list(handled)[-2000:]
