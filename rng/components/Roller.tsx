@@ -18,6 +18,14 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { Transaction } from "@solana/web3.js";
 import { PRICE_LABEL } from "@/lib/constants";
 
+// Browser-safe base64 → Uint8Array (avoids Buffer which isn't a browser global)
+function b64ToBytes(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+
 type Phase =
   | "idle"
   | "ready"
@@ -93,7 +101,7 @@ export function Roller() {
 
       // ── 2. sign in wallet ───────────────────────────────────────────
       setPhase("signing");
-      const tx = Transaction.from(Buffer.from(j.transaction, "base64"));
+      const tx = Transaction.from(b64ToBytes(j.transaction));
       const signed = await signTransaction(tx);
 
       // ── 3. send to chain ────────────────────────────────────────────
