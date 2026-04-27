@@ -362,12 +362,19 @@ def main():
             handled.add(tid)
             continue
 
-        # Generate reply
+        # Generate reply — inject live archive so PRIOR can cite breaking news
         try:
+            try:
+                sys.path.insert(0, str(ROOT / "scripts"))
+                import lib_archive
+                live = lib_archive.for_prompt(max_lines=60)
+                sys_prompt = REPLY_SYSTEM + ("\n\nLIVE ARCHIVE (newest first):\n" + live if live else "")
+            except Exception:
+                sys_prompt = REPLY_SYSTEM
             gen = anthr.messages.create(
                 model=model,
                 max_tokens=400,
-                system=REPLY_SYSTEM,
+                system=sys_prompt,
                 messages=[{"role": "user", "content": f"Mention from @{getattr(u, 'username', 'user')}:\n{clean}\n\nReply:"}],
             )
             reply_text = "".join(b.text for b in gen.content if getattr(b, "type", "") == "text").strip()

@@ -26,6 +26,10 @@ import datetime
 from pathlib import Path
 import sys
 
+# Load the dynamic archive helper (so the system prompt sees newly-broken news).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import lib_archive
+
 # ── Site log path (appended so the site's /data/log.json feed updates) ──
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LOG_PATH  = REPO_ROOT / "data" / "log.json"
@@ -331,10 +335,17 @@ def generate_post() -> str:
     model  = os.environ.get("PRIOR_MODEL", "claude-sonnet-4-5")
     user   = random.choice(USER_PROMPTS)
 
+    # Inject the dynamic archive (auto-grows as news breaks via the monitor)
+    # so PRIOR can cite freshly-discovered events alongside the seeded ones.
+    live_archive = lib_archive.for_prompt(max_lines=80)
+    system_prompt = SYSTEM_PROMPT
+    if live_archive:
+        system_prompt += "\n\nLIVE ARCHIVE (auto-grown from the monitor — newest first; reference these freely):\n" + live_archive
+
     msg = client.messages.create(
         model=model,
         max_tokens=400,
-        system=SYSTEM_PROMPT,
+        system=system_prompt,
         messages=[{"role": "user", "content": user}],
     )
     # Concatenate all text blocks

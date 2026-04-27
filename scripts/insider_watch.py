@@ -291,10 +291,19 @@ If today's feed signal is light, write a "quiet day" thread that still has subst
 
 Output ONLY the JSON array of strings."""
 
+    # Inject live archive so today's report can cite freshly-broken events
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import lib_archive
+        live = lib_archive.for_prompt(max_lines=80)
+        sys_prompt = WATCH_SYSTEM + ("\n\nLIVE ARCHIVE (auto-grown · newest first — these are real, cite freely):\n" + live if live else "")
+    except Exception:
+        sys_prompt = WATCH_SYSTEM
+
     msg = client.messages.create(
         model=model,
         max_tokens=4000,
-        system=WATCH_SYSTEM,
+        system=sys_prompt,
         messages=[{"role": "user", "content": user_prompt}],
     )
     text = "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text").strip()

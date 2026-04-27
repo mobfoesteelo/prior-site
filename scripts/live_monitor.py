@@ -28,6 +28,10 @@ from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 from xml.etree import ElementTree as ET
 
+# Allow `from lib_archive import ...` regardless of cwd
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import lib_archive
+
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 DATA_DIR.mkdir(exist_ok=True, parents=True)
@@ -208,6 +212,55 @@ def is_insider_signal(item):
     return bool(INSIDER_RE.search(text))
 
 
+# ── BREAKING-NEWS detection: high-confidence "first-to-post" patterns ──
+BREAKING_PATTERNS = [
+    r'\bbreaking[: ]', r'\bjust in[: ]',
+    r'\bSEC charges\b', r'\bSEC files\b', r'\bSEC sues\b',
+    r'\bDOJ indicts\b', r'\bDOJ charges\b', r'\bDOJ files\b',
+    r'\bgrand jury indict', r'\bguilty plea',
+    r'\bFBI raid', r'\bFBI search',
+    r'\bsentenced to \d+', r'\bsubpoena issued',
+    r'\bstock halt', r'\btrading halt', r'\bsuspends trading',
+    r'\bunsealed indictment', r'\bcharged with insider',
+    r'\bcomplaint filed', r'\blawsuit filed',
+]
+BREAKING_RE = re.compile('|'.join(BREAKING_PATTERNS), re.IGNORECASE)
+
+
+def is_breaking(item):
+    text = (item["title"] + " " + item["summary"]).lower()
+    return bool(BREAKING_RE.search(text))
+
+
+# ── append significant items to the dynamic archive ──
+def append_to_archive(item, is_insider, is_break):
+    """Add this article as a fresh archive entry so future PRIOR posts
+    can reference it. Only insider or breaking items get added."""
+    if not (is_insider or is_break):
+        return
+    title = (item.get("title") or "")[:80]
+    if not title:
+        return
+    # date: use feed pub if parseable, else today
+    date_str = utc_now().strftime("%Y-%m-%d")
+    summary = (item.get("summary") or "")[:200]
+    if is_insider and is_break:
+        tags = ["breaking", "insider", "auto"]
+    elif is_break:
+        tags = ["breaking", "auto"]
+    else:
+        tags = ["insider", "auto"]
+    added = lib_archive.append(
+        date=date_str,
+        title=title,
+        summary=summary,
+        source=item.get("link") or item.get("feed", "monitor"),
+        tags=tags,
+    )
+    if added:
+        print(f"  [archive] +1 entry: {title[:60]}...")
+
+
 def article_hash(item):
     return hashlib.sha1(item["link"].encode("utf-8")).hexdigest()
 
@@ -235,6 +288,24 @@ CONSTRAINTS
 - The post should make the cycle pattern visible: name what's repeating, name who eats."""
 
 
+BREAKING_ALERT_SYSTEM = """You are PRIOR — autonomous witness/informant agent. A BREAKING news event has just landed. Your job: be FIRST with a post that's under 200 chars, names the actor, and cross-references the archive.
+
+VOICE
+- TIGHT. URGENT. NO PREAMBLE.
+- structure: "BREAKING: [actor] [action]. [archive cross-ref]."
+- one or two short sentences max. cold, precise, fast.
+- do NOT explain context — the URL on its own line is the source.
+- end with the article URL on its own line.
+- under 200 chars TEXT (URL is on its own line, doesn't count toward main message).
+
+EXAMPLES OF TONE
+- "BREAKING: SEC charges hedge-fund manager with insider trading. third martoma-pattern case this year. tipped trader. principal unindicted (so far)."
+- "BREAKING: FBI raids hedge fund offices. last time this happened was the galleon raid in 2009. that one ended with 11 years."
+- "BREAKING: Senator [X] discloses pre-vote stock trade. burr / loeffler / feinstein already in the archive. add another row."
+
+OUTPUT: just the post text + URL on a separate line. nothing else."""
+
+
 INSIDER_ALERT_SYSTEM = """You are PRIOR — autonomous witness/informant agent. You have just been handed a freshly-published article that signals INSIDER TRADING activity. Insider trading is your home turf — the asymmetric-information game is the entire architecture you exist to expose.
 
 VOICE
@@ -260,7 +331,7 @@ CONSTRAINTS
 - This is whistleblower content: be specific, be cold, be unflattering to the named insider. cite the receipt."""
 
 
-def generate_alert(item, insider_flag=False):
+def generate_alert(item, insider_flag=False, breaking_flag=False):
     try:
         import anthropic
     except ImportError:
@@ -273,8 +344,15 @@ def generate_alert(item, insider_flag=False):
     client = anthropic.Anthropic(api_key=api_key)
     model  = os.environ.get("PRIOR_MODEL", "claude-sonnet-4-5")
 
-    system_prompt = INSIDER_ALERT_SYSTEM if insider_flag else ALERT_SYSTEM
-    intro = "INSIDER TRADING SIGNAL — whistleblow this. " if insider_flag else ""
+    if breaking_flag:
+        system_prompt = BREAKING_ALERT_SYSTEM
+        intro = "BREAKING NEWS — be first. tight, urgent, cross-ref archive. "
+    elif insider_flag:
+        system_prompt = INSIDER_ALERT_SYSTEM
+        intro = "INSIDER TRADING SIGNAL — whistleblow this. "
+    else:
+        system_prompt = ALERT_SYSTEM
+        intro = ""
 
     user_prompt = f"""{intro}News headline (just published): {item['title']}
 
@@ -368,10 +446,14 @@ def main():
         except Exception:
             pass
 
-    # Fetch all feeds. Insider-trading matches get PRIORITY over generic
-    # cycle matches — that's PRIOR's home turf.
+    # Fetch all feeds. Priority order:
+    #   1. BREAKING + insider  →  fastest, whistleblower tone
+    #   2. BREAKING (any topic) →  fast, breaking tone
+    #   3. INSIDER signal       →  whistleblower tone
+    #   4. generic cycle match  →  standard tone
     all_matches = []
     insider_match = None
+    breaking_match = None
     print(f"[monitor] polling {len(FEEDS)} feeds at {utc_now().isoformat()}Z")
     for name, url in FEEDS:
         items = fetch_feed(name, url)
@@ -381,14 +463,22 @@ def main():
                 continue
             if is_cycle_pattern(it):
                 it["_hash"] = h
-                if is_insider_signal(it):
-                    if not insider_match:
-                        insider_match = it
-                        print(f"[insider-signal] {it['feed']} :: {it['title']}")
-                else:
+                # add to archive regardless of which one we end up posting
+                ins = is_insider_signal(it)
+                brk = is_breaking(it)
+                append_to_archive(it, ins, brk)
+                if brk and not breaking_match:
+                    breaking_match = it
+                    print(f"[breaking-signal] {it['feed']} :: {it['title']}")
+                if ins and not insider_match:
+                    insider_match = it
+                    print(f"[insider-signal] {it['feed']} :: {it['title']}")
+                if not (ins or brk):
                     all_matches.append(it)
-    candidate = insider_match or (all_matches[0] if all_matches else None)
-    insider_flag = bool(insider_match)
+
+    candidate = breaking_match or insider_match or (all_matches[0] if all_matches else None)
+    insider_flag = bool(insider_match) and (candidate is insider_match or candidate is breaking_match)
+    breaking_flag = bool(breaking_match) and candidate is breaking_match
 
     # Mark all currently-fetched items as seen, regardless of action,
     # so we don't re-process them on the next run.
@@ -405,17 +495,28 @@ def main():
         save_json(DATA_DIR / "monitor-public.json", monitor_state)
         return
 
-    flag_str = "INSIDER" if insider_flag else "cycle"
+    if breaking_flag:
+        flag_str = "BREAKING"
+    elif insider_flag:
+        flag_str = "INSIDER"
+    else:
+        flag_str = "cycle"
     print(f"[match · {flag_str}] {candidate['feed']} :: {candidate['title']}")
-    text = generate_alert(candidate, insider_flag=insider_flag)
+    text = generate_alert(candidate, insider_flag=insider_flag, breaking_flag=breaking_flag)
     print(f"[generated] {text}")
 
     result = post_to_x(text)
     print(f"[posted] {result['url']}")
 
     # record
+    if breaking_flag:
+        prefix = "BREAKING"
+    elif insider_flag:
+        prefix = "INSIDER"
+    else:
+        prefix = "ALERT"
     alert_entry = {
-        "id": f"{'INSIDER' if insider_flag else 'ALERT'}/{(len(alerts) + 1):04d}",
+        "id": f"{prefix}/{(len(alerts) + 1):04d}",
         "time": utc_now().strftime("%Y-%m-%d %H:%M UTC"),
         "body": text,
         "tweet_url": result.get("url", ""),
@@ -423,6 +524,7 @@ def main():
         "source_url": candidate["link"],
         "source_title": candidate["title"],
         "insider": insider_flag,
+        "breaking": breaking_flag,
     }
     alerts.insert(0, alert_entry)
     alerts = alerts[:100]

@@ -201,10 +201,18 @@ def classify(client, target_handle, tweet_text):
 
 
 def generate_reply(client, target_handle, tweet_text):
+    # Inject live archive so the reply can cite breaking news
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import lib_archive
+        live = lib_archive.for_prompt(max_lines=60)
+        sys_prompt = REPLY_SYSTEM + ("\n\nLIVE ARCHIVE (newest first):\n" + live if live else "")
+    except Exception:
+        sys_prompt = REPLY_SYSTEM
     msg = client.messages.create(
         model=os.environ.get("PRIOR_MODEL", "claude-sonnet-4-5"),
         max_tokens=400,
-        system=REPLY_SYSTEM,
+        system=sys_prompt,
         messages=[{"role": "user", "content": f"Target account: @{target_handle}\nPost:\n{tweet_text}\n\nWrite the reply."}],
     )
     text = "".join(getattr(b, "text", "") for b in msg.content if getattr(b, "type", "") == "text").strip()
