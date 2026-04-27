@@ -1,6 +1,6 @@
 {
-  "last_check_at": "2026-04-27T11:45:45Z",
+  "last_check_at": "2026-04-27T13:18:11Z",
   "feeds_count": 20,
   "alerts_count": 3,
-  "status": "alert published"
+  "status": "cooldown (91/120 min)"
 }
