@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>PRIOR · INSIDER WATCH · LIVE</title>
+<link rel="icon" type="image/jpeg" href="/assets/prior-pfp.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="watch.css">
+</head>
+<body>
+
+<!-- CRT overlays -->
+<div class="scanlines"></div>
+<div class="vignette"></div>
+<div class="crt-flicker"></div>
+
+<!-- REC indicator -->
+<div class="rec-indicator">
+  <span class="rec-dot"></span>
+  <span class="rec-text">PRIOR · INSIDER WATCH · LIVE</span>
+  <span class="rec-meta" id="rec-clock">--:--:-- UTC</span>
+</div>
+
+<main class="watch-grid">
+
+  <!-- LEFT: report stream -->
+  <section class="watch-col watch-col-left">
+
+    <header class="watch-header">
+      <img class="watch-pfp" src="/assets/prior-pfp.jpg" alt="prior" />
+      <div class="watch-title">
+        <h1>INSIDER WATCH</h1>
+        <p class="watch-tag">// daily synthesis · 24h lookback · cross-ref archive</p>
+      </div>
+    </header>
+
+    <!-- Today's report header -->
+    <article class="panel panel-tight">
+      <div class="report-meta">
+        <span class="report-date" id="report-date">[ loading ]</span>
+        <span class="report-status" id="report-status">— polling —</span>
+      </div>
+      <div class="report-counts" id="report-counts">
+        <span><b id="cnt-tweets">—</b> tweets</span>
+        <span><b id="cnt-signals">—</b> signals</span>
+        <span><b id="cnt-alerts">—</b> alerts</span>
+        <span><b id="cnt-archive">—</b> days archived</span>
+      </div>
+    </article>
+
+    <!-- Animated thread reveal -->
+    <article class="panel panel-tall">
+      <header class="panel-head">
+        <span class="panel-title">[ // today's thread ]</span>
+        <span class="panel-sub" id="thread-sub">awaiting drop</span>
+      </header>
+      <div class="thread-stage" id="thread-stage">
+        <div class="loading">— polling daily report —</div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- RIGHT: live signal sources + archive -->
+  <section class="watch-col watch-col-right">
+
+    <!-- Source signals (the public news/SEC/DOJ items consulted) -->
+    <article class="panel">
+      <header class="panel-head">
+        <span class="panel-title">[ // sources consulted ]</span>
+        <span class="panel-sub" id="sources-sub">—</span>
+      </header>
+      <div class="sources-list" id="sources-list">
+        <div class="loading">—</div>
+      </div>
+    </article>
+
+    <!-- Archive cross-reference (animated through 65 cycles) -->
+    <article class="panel">
+      <header class="panel-head">
+        <span class="panel-title">[ // archive · 65 entries on file ]</span>
+        <span class="panel-sub">cross-referencing</span>
+      </header>
+      <div class="archive-spotlight" id="archive-spotlight">
+        <!-- populated by watch.js — cycles through receipts -->
+      </div>
+    </article>
+
+    <!-- Past 7 reports recap -->
+    <article class="panel panel-tall">
+      <header class="panel-head">
+        <span class="panel-title">[ // recent reports ]</span>
+        <span class="panel-sub" id="history-sub">—</span>
+      </header>
+      <div class="history-list" id="history-list">
+        <div class="loading">—</div>
+      </div>
+    </article>
+
+    <!-- CTA -->
+    <article class="panel panel-flat">
+      <div class="cta-row">
+        <span class="cta-label">SITE</span>
+        <span class="cta-value">priorprotocol.fun</span>
+      </div>
+      <div class="cta-row">
+        <span class="cta-label">RNG</span>
+        <span class="cta-value">rng.priorprotocol.fun · 0.1 SOL → 0–1000</span>
+      </div>
+      <div class="cta-row">
+        <span class="cta-label">X</span>
+        <span class="cta-value">@Prior_Agent</span>
+      </div>
+    </article>
+
+  </section>
+</main>
+
+<!-- Bottom crawl: rotates through recent insider-related news headlines -->
+<div class="news-crawl">
+  <div class="crawl-track" id="crawl-track">
+    <span class="crawl-loading">// connecting to feeds...</span>
+  </div>
+</div>
+
+<script src="watch.js"></script>
+</body>
+</html>
