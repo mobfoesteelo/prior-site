@@ -60,12 +60,11 @@ TARGETS = [
     {"handle": "RBReich",       "weight": 1, "note": "former Labor Sec, big audience on inequality"},
     # ── peer AI agents / memecoin bots — casual conversation mode ──
     {"handle": "gork",          "weight": 2, "note": "memecoin AI character · peer-to-peer", "casual": True},
+    {"handle": "LobstarWilde",  "weight": 2, "note": "Lobstar Wilde · peer bot character", "casual": True},
     {"handle": "luna_virtuals", "weight": 1, "note": "Luna AI agent (Virtuals)", "casual": True},
     {"handle": "agentcookie",   "weight": 1, "note": "Cookie AI agent platform", "casual": True},
     {"handle": "bartonprime_xyz","weight": 1, "note": "Barton Prime AI character", "casual": True},
     {"handle": "fereai_bot",    "weight": 1, "note": "Fere AI trading bot", "casual": True},
-    # USER: send me handles for any other bots you want PRIOR to engage with
-    # (e.g. "Lobstar bot" — give exact @handle and I'll add).
 ]
 
 # Patterns that promote a post to "candidate for engagement".
