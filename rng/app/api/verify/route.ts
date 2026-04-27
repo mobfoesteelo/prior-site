@@ -27,6 +27,7 @@ import { getAgent } from "@/lib/pump-agent";
 import { CURRENCY_MINT } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";          // uses node:crypto.randomBytes
 
 const MAX_ATTEMPTS = 10;
 const RETRY_DELAY_MS = 2000;

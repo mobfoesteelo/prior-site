@@ -20,6 +20,7 @@ import {
 } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";   // never cache, always rebuild
+export const runtime = "nodejs";          // SDK uses Node crypto + bn.js, not Edge-compatible
 
 export async function POST(req: NextRequest) {
   let body: { wallet?: string };
