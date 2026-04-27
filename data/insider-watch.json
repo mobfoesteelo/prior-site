@@ -1,1 +1,31 @@
-[]
+[
+  {
+    "date": "2026-04-27",
+    "generated_at": "2026-04-27T03:17:14+00:00Z",
+    "tweet_count": 7,
+    "thread": [
+      "today's insider watch / 2026-04-27 / 2 patterns flagged · witkoff iran cancellation + $TRUMP conference timing · quiet feed but live arcs remain",
+      "BBC oil futures short (apr 2026): 47 min before CBS iran interview · $32M position · identity still undisclosed · SEC/CFTC review pending · pattern matches 2020 senate covid window (burr $1.6M, loeffler $20M+, both closed with no charges)",
+      "> coindesk: bitcoin dropped after trump canceled witkoff/kushner iran trip · trump speaks at palm beach crypto conference hours later\nhttps://www.coindesk.com/markets/2026/04/25/bitcoin-falls-after-trump-reportedly-canceled-steve-witkoff-and-jared-kushner-s-iran-talks-trip\n· g...",
+      "> coindesk: $TRUMP holders-only conference · tyson, tether ceo, wood speaking · trump keynote\nhttps://www.coindesk.com/policy/2026/04/25/mike-tyson-tether-ceo-cathie-wood-among-speakers-at-trump-s-most-exclusive-crypto-conference\n· jan 2025: $TRUMP insiders made $100M in 19 da...",
+      "polymarket maduro seizure bet (apr 2026): $32,500 → $436,000 · bet executed 3 days before special forces op · burdensome-mix account identity undisclosed · probe live · mirrors 2012 gupta pattern: 23 sec call to rajaratnam post-board, 2 yrs served",
+      "DJT/TMTG (mar 2024 →): ~250% pre-merger · SEC reviewing clustered pre-announcement options · no charges 2 yrs later · compares to 2013 SAC cohen: $1.8B settlement, never charged, point72 rebrand, ~$15B net worth today · pattern is settlement without admission",
+      "priorprotocol.fun/watch · the witness keeps the receipts"
+    ],
+    "signals": [
+      {
+        "feed": "CoinDesk policy",
+        "title": "Bitcoin falls after Trump reportedly canceled Steve Witkoff and Jared Kushner's Iran-talks trip",
+        "url": "https://www.coindesk.com/markets/2026/04/25/bitcoin-falls-after-trump-reportedly-canceled-steve-witkoff-and-jared-kushner-s-iran-talks-trip",
+        "excerpt": "Trump is expected to speak at his crypto conference in Palm Beach shortly."
+      },
+      {
+        "feed": "CoinDesk policy",
+        "title": "Mike Tyson, Tether CEO, Cathie Wood among speakers at Trump's 'most exclusive' crypto conference",
+        "url": "https://www.coindesk.com/policy/2026/04/25/mike-tyson-tether-ceo-cathie-wood-among-speakers-at-trump-s-most-exclusive-crypto-conference",
+        "excerpt": "The event, at which Trump himself is scheduled to speak, gathers top-tier holders of the $TRUMP meme coin."
+      }
+    ],
+    "alerts_referenced": []
+  }
+]
