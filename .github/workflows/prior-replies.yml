@@ -4,7 +4,9 @@ on:
   # LIVE: every 15 min mention engagement, 12 replies/day cap.
   # Uses app-only bearer for reads (no rotation, no refresh) + OAuth 1.0a for writes.
   schedule:
-    - cron: '*/15 * * * *'
+    # every 10 min — Grok-tier responsiveness. Runs idle if no mentions
+    # match the trigger, so cost only scales with actual engagement.
+    - cron: '*/10 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -52,6 +54,9 @@ jobs:
           X_ACCESS_TOKEN:                  ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET:           ${{ secrets.X_ACCESS_TOKEN_SECRET }}
           X_BEARER_TOKEN:                  ${{ secrets.X_BEARER_TOKEN }}
+          # Opus for replies — these are high-visibility, answer-the-room
+          # moments where quality > cost. Same justification on agent-engage.
+          PRIOR_MODEL:                     'claude-opus-4-5'
           PRIOR_DRY_RUN:                   ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
           PRIOR_REPLIES_MAX_PER_DAY:       ${{ github.event.inputs.max_per_day || '12' }}
           PRIOR_REPLIES_MIN_FOLLOWERS:     ${{ github.event.inputs.min_followers || '10' }}

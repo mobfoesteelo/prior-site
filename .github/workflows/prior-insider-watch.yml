@@ -42,6 +42,9 @@ jobs:
           X_API_SECRET:          ${{ secrets.X_API_SECRET }}
           X_ACCESS_TOKEN:        ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          # Opus for the daily flagship thread — this is PRIOR's signature
+          # piece of content, can't be Sonnet-mid.
+          PRIOR_MODEL:           'claude-opus-4-5'
           PRIOR_DRY_RUN:         ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
         run: python scripts/insider_watch.py
       - name: Commit report + log

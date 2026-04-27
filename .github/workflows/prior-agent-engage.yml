@@ -46,6 +46,10 @@ jobs:
           X_ACCESS_TOKEN:           ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET:    ${{ secrets.X_ACCESS_TOKEN_SECRET }}
           X_BEARER_TOKEN:           ${{ secrets.X_BEARER_TOKEN }}
+          # Opus for engagement quality — when PRIOR is replying to a high-
+          # leverage account (aixbt, FluentInFinance, ProPublica, RBReich),
+          # the reply needs to be Grok-tier sharp.
+          PRIOR_MODEL:              'claude-opus-4-5'
           PRIOR_DRY_RUN:            ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
           PRIOR_AGENT_MAX_PER_DAY:  ${{ github.event.inputs.max_per_day || '4' }}
         run: python scripts/agent_engage.py
