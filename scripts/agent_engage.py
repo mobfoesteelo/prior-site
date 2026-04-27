@@ -396,10 +396,15 @@ def main():
             posted += 1
             continue
 
-        # Post as QUOTE-TWEET (better reach + bypasses reply-restrictions
-        # that some accounts use, e.g. aixbt's "only mentioned can reply").
-        # Falls back to a reply if quote fails for some reason.
+        # Three-tier posting strategy:
+        #   1. QUOTE-TWEET — best reach + bypasses reply restrictions
+        #   2. REPLY — fallback if quote fails (account-level reply restriction)
+        #   3. STANDALONE POST — fallback if both fail (X 7-day fresh-app filter
+        #      blocks all interactions during first week post-auth). The
+        #      receipt-text still lands publicly, just without an attribution
+        #      link. PRIOR's voice + archive cite still gets the impression.
         engagement_kind = "quote"
+        url = None
         try:
             r = write.create_tweet(text=reply_text, quote_tweet_id=str(candidate.id))
             posted_id = str(r.data["id"]) if r and r.data else ""
@@ -408,7 +413,6 @@ def main():
         except Exception as e_quote:
             err_str = str(e_quote)[:200]
             print(f"    [quote-fail] {type(e_quote).__name__}: {err_str}")
-            # try reply as fallback
             try:
                 r = write.create_tweet(text=reply_text, in_reply_to_tweet_id=int(candidate.id))
                 posted_id = str(r.data["id"]) if r and r.data else ""
@@ -418,11 +422,21 @@ def main():
             except Exception as e_reply:
                 err_str2 = str(e_reply)[:200]
                 print(f"    [reply-fail] {type(e_reply).__name__}: {err_str2}")
-                # Both modes failed. If it's a 403 (e.g. CA filter, restricted),
-                # don't keep trying this tweet — mark as handled.
-                if "403" in err_str2 or "403" in err_str or "Forbidden" in err_str2:
+                # Last-resort: standalone post. Same receipt, lands publicly
+                # without quote/reply attribution. Mark candidate as handled
+                # so we don't retry on the same tweet.
+                try:
+                    r = write.create_tweet(text=reply_text)
+                    posted_id = str(r.data["id"]) if r and r.data else ""
+                    url = f"https://x.com/i/status/{posted_id}" if posted_id else ""
+                    engagement_kind = "standalone"
+                    print(f"    [standalone-posted] {url}")
+                except Exception as e_solo:
+                    err_str3 = str(e_solo)[:200]
+                    print(f"    [standalone-fail] {type(e_solo).__name__}: {err_str3}")
                     handled.add(str(candidate.id))
-                continue
+                    continue
+                handled.add(str(candidate.id))
 
         # success path (quote OR reply landed)
         entry = {

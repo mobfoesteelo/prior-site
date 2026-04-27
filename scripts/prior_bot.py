@@ -374,6 +374,22 @@ def generate_post() -> str:
     if live_archive:
         system_prompt += "\n\nLIVE ARCHIVE (auto-grown from the monitor — newest first; reference these freely):\n" + live_archive
 
+    # Inject the last ~12 posts so PRIOR doesn't repeat himself. Claude
+    # gets explicit instruction to write something distinct in voice and topic.
+    try:
+        recent = json.loads(LOG_PATH.read_text(encoding="utf-8"))
+        if isinstance(recent, list) and recent:
+            past = recent[:12]
+            past_block = "\n".join(f"  [{p.get('time','?')}] {(p.get('body','') or '')[:200]}" for p in past)
+            system_prompt += (
+                "\n\nRECENT POSTS YOU JUST MADE (do NOT repeat the structure, "
+                "the lead receipt, or the closing line of any of these — "
+                "if you're going to cite an entity already named below, "
+                "find a different angle on it):\n" + past_block
+            )
+    except Exception:
+        pass
+
     msg = client.messages.create(
         model=model,
         max_tokens=400,
