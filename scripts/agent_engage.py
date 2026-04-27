@@ -50,22 +50,50 @@ TARGETS = [
     {"handle": "WhiteHouse",    "weight": 1, "note": "official admin handle, signal source"},
 ]
 
-# Patterns that promote a post to "candidate for engagement"
+# Patterns that promote a post to "candidate for engagement".
+# Broad on purpose — the Claude classifier is the real quality gate.
+# These just say "this post might be worth PRIOR commenting on."
 TRIGGER_PATTERNS = [
-    r'\binsider trad', r'\bfront[- ]?run', r'\bunusual.{0,15}(option|volume)',
-    r'\bSEC charges', r'\bDOJ indicts',
-    r'\bPelosi', r'\bBurr', r'\bLoeffler', r'\bFeinstein', r'\bTuberville',
-    r'\bKaplan', r'\bRosengren', r'\bClarida',
-    r'\bSAC ', r'\bGalleon', r'\bRajaratnam', r'\bCohen', r'\bBoesky', r'\bMilken',
+    # ── direct insider-trading / regulatory ──
+    r'\binsider', r'\bfront[- ]?run', r'\bunusual.{0,15}(option|volume|activity|trade)',
+    r'\bSEC ', r'\bDOJ ', r'\bCFTC ', r'\bFinCEN',
+    r'\bcharged', r'\bindict', r'\bguilty plea', r'\bsentence',
+    # ── named historical insiders / politicians ──
+    r'\bPelosi', r'\bBurr', r'\bLoeffler', r'\bFeinstein', r'\bTuberville', r'\bCrenshaw',
+    r'\bKaplan', r'\bRosengren', r'\bClarida', r'\bPowell',
+    r'\bSAC ', r'\bGalleon', r'\bRajaratnam', r'\bGupta', r'\bCohen ', r'\bBoesky', r'\bMilken', r'\bMartoma',
+    r'\bMadoff', r'\bBuffett', r'\bSackler', r'\bDimon', r'\bBlankfein',
+    # ── Trump-admin specific ──
     r'\bDJT\b', r'\bTrump Media', r'\bTMTG', r'\bMELANIA', r'\bLIBRA',
-    r'\bbundler', r'\bMEV ', r'\bsandwich', r'\bsniper bot',
-    r'\bcycle', r'\bplaybook', r'\barchitecture',
-    r'\bcorrupt', r'\bfraud', r'\bponzi', r'\brug pull',
-    r'\bcolluded', r'\btoo big to fail', r'\btoo big to jail',
-    r'\bFed officials', r'\bSenate.{0,10}(stock|trade)',
-    r'\bpump\.fun', r'\bpumpfun', r'\bPolymarket',
-    # specific Trump admin signals
-    r'\boil futures', r'\bcabinet.{0,15}(trade|disclos)', r'\bMaduro', r'\bIran.{0,10}strike',
+    r'\bTrump.{0,40}(stock|option|trade|insider|disclos|crypto|coin|token)',
+    r'\bMusk.{0,30}(short|position|stock|tesla|disclos|trade)',
+    r'\boil.{0,15}(future|short|spike|crash)', r'\bMaduro', r'\bVenezuela',
+    r'\bIran.{0,15}(strike|interview|sanction|tension)',
+    r'\bcabinet.{0,15}(trade|disclos|stock)', r'\bSchedule F',
+    # ── crypto market structure (CT vocab) ──
+    r'\bbundler', r'\bbundle.{0,10}wallet', r'\bcoordinated', r'\bMEV ',
+    r'\bsandwich', r'\bsniper', r'\bsnipe ', r'\bpresale',
+    r'\bstealth', r'\blaunch.{0,15}(insider|leak|early)',
+    r'\bpump\.fun', r'\bpumpfun', r'\bdex screener', r'\bdexscreener',
+    r'\bPolymarket', r'\bprediction market',
+    # ── CT cycle / pattern vocab ──
+    r'\bcycle', r'\bplaybook', r'\barchitecture', r'\bnarrative',
+    r'\brotation', r'\brotating', r'\balpha\b', r'\bleaked', r'\bleak\b',
+    r'\bcorrupt', r'\bfraud', r'\bponzi', r'\brug', r'\bscam',
+    r'\bcolluded', r'\bcollusion', r'\bconspirac',
+    r'\btoo big to (fail|jail)', r'\bdeferred prosecution',
+    # ── political / institutional ──
+    r'\bSenate.{0,15}(stock|trade|disclos|vote)',
+    r'\bCongress.{0,15}(trade|stock|insider)',
+    r'\bFed (official|chair|president|trade)', r'\bSTOCK Act',
+    r'\bWhite House', r'\bExecutive Order',
+    # ── markets / tickers (broadly engageable) ──
+    r'\$[A-Z]{2,8}\b',         # any $TICKER mention
+    r'\bbitcoin', r'\bethereum', r'\bSOL\b', r'\bsolana',
+    r'\bhalt(ed|ing)? trading', r'\bmarket.{0,10}(crash|dump|rotation)',
+    # ── catch-all for "history rhymes" energy posts that PRIOR can add a receipt to ──
+    r'\bhistory (repeats|rhymes|will)', r'\bsame.{0,10}(playbook|game|story|cycle)',
+    r'\bagain\.{0,3}$', r'\bevery time',
 ]
 TRIGGER_RE = re.compile('|'.join(TRIGGER_PATTERNS), re.IGNORECASE)
 
@@ -137,16 +165,22 @@ def fetch_recent_from_target(client, handle, since_minutes=180):
 # ── relevance + reply generation ──────────────────────────────────
 RELEVANCE_SYSTEM = """You decide whether PRIOR (an autonomous witness/informant agent for a Solana memecoin) should engage with this X post.
 
-ENGAGE = TRUE only if:
-- The post substantively discusses: market cycles, insider trading, regulatory capture, named insider scandals, the DPA carousel, fraud / front-running / unusual options activity / specific named politicians' trades / crypto rug or insider patterns / or anything PRIOR has documented receipts for.
-- AND the post is sincere (not pure shilling, not ratio-bait, not low-effort meme).
+ENGAGE = TRUE if PRIOR can credibly add value via an archive receipt. This includes:
+- Direct discussion of: market cycles, insider trading, regulatory capture, named insider scandals, fraud, front-running, options activity, politician trades, crypto rug/insider patterns
+- ADJACENT content where PRIOR has a strong receipt: someone discussing a market event PRIOR has historical pattern for, a specific token launch where PRIOR can name the bundler-pattern, a Trump-admin policy where PRIOR has a 2026 receipt, a trader discussing a stock with insider history (Boeing, Wells, Goldman, JPM, etc.)
+- "history rhymes" / "this is the same playbook" energy where PRIOR can name the historical playbook
+- Substantive market commentary on tokens / cycles / regulations even if not directly insider-related
+- Posts mentioning specific named insiders (Pelosi, Cohen, Madoff, etc.) — even tangentially
 
-ENGAGE = FALSE if:
-- pure pump shilling ("buy this", "1000x", "moon")
-- generic bull-posting or bear-posting without a substantive claim
-- low-effort takes, replies, or images-only
-- already saturated with replies (just being one of 200 replies adds nothing)
-- the topic doesn't match anything PRIOR has receipts for
+ENGAGE = FALSE for:
+- pure pump shilling ("1000x", "moon", "buy this", "this is going to send")
+- generic bull/bear posts without a specific claim
+- low-effort memes / images-only / single-emoji
+- viral threads already saturated with 100+ replies (PRIOR's reply gets buried)
+- account drama / personal beef
+- non-finance / non-political topics
+
+Be permissive — when in doubt, engage. PRIOR's archive is deep; he can find a receipt for almost any market topic. The goal is steady visibility, not gatekeeping.
 
 Output strictly: {"engage": true|false, "reason": "<≤80 char>"}"""
 
