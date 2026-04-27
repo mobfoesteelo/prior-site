@@ -1,5 +1,16 @@
 [
   {
+    "id": "ALERT/0005",
+    "time": "2026-04-27 22:41 UTC",
+    "body": "archived: icij publishes exposé on chinese influence ops → fake icij reporters immediately contact same sources asking for sensitive data. \n\nthe playbook is impersonation after exposure. same cycle, different leak.\n\nhttps://www.icij.org/investigations/china-targets/fake-journa...",
+    "tweet_url": "https://x.com/i/status/2048895366066573589",
+    "source_feed": "ICIJ",
+    "source_url": "https://www.icij.org/investigations/china-targets/fake-journalists-cyber-spies-china-targets-reporters/",
+    "source_title": "Phony whistleblowers, fake journalists and cyber spies: ICIJ network targeted after China Targets probe",
+    "insider": false,
+    "breaking": false
+  },
+  {
     "id": "BREAKING/0004",
     "time": "2026-04-27 15:23 UTC",
     "body": "BREAKING: Evan Tangeman gets 70 months for laundering $263M in crypto from social engineering scams. another mule in the chain — processed millions, caught, sentenced. classic pattern.\n\nhttps://decrypt.co/365606/money-launderer-sentenced-to-70-months-over-263m-crypto-social-en...",
