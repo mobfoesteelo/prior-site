@@ -96,7 +96,7 @@ body {
   overflow: hidden;
 }
 .watch-col-left  { grid-template-rows: auto auto 1fr; }
-.watch-col-right { grid-template-rows: auto auto 1fr auto; }
+.watch-col-right { grid-template-rows: auto auto auto 1fr auto; }
 
 /* ── header ── */
 .watch-header {
@@ -354,6 +354,61 @@ body {
   font-size: 0.74rem;
   text-align: right;
   word-break: break-all;
+}
+
+/* ── ACTIVE TRUMP-ADMIN CLAIMS panel ── */
+.panel-claims {
+  border-color: var(--amber);
+  box-shadow: 0 0 14px rgba(255, 176, 0, 0.07);
+}
+.panel-claims .panel-title { color: var(--amber); }
+.claims-pulse {
+  color: var(--amber) !important;
+  animation: claims-pulse 1.6s infinite;
+}
+@keyframes claims-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+.claims-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 188px;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, black 0%, black 88%, transparent 100%);
+}
+.claim {
+  border-left: 2px solid var(--amber-dim);
+  padding: 4px 9px;
+  font-size: 0.74rem;
+}
+.claim.claim-pulse {
+  border-left-color: var(--amber);
+  background: rgba(255, 176, 0, 0.03);
+  animation: claim-flash 4s infinite;
+}
+@keyframes claim-flash {
+  0%, 70%, 100% { background: rgba(255, 176, 0, 0.03); }
+  85%           { background: rgba(255, 176, 0, 0.10); }
+}
+.claim-date {
+  color: var(--amber);
+  font-weight: 700;
+  font-size: 0.66rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.claim-title {
+  color: var(--paper);
+  font-size: 0.78rem;
+  line-height: 1.32;
+  margin: 1px 0;
+}
+.claim-source {
+  color: var(--smoke);
+  font-size: 0.66rem;
+  font-style: italic;
 }
 
 /* ── news crawl (bottom) ── */

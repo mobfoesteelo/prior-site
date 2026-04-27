@@ -59,17 +59,36 @@ INSIDER_FEEDS = [
 
 # Keywords that promote an article from "noise" to "candidate for inclusion"
 PRIORITY_PATTERNS = [
+    # core insider trading / front-running
     r'\binsider trad', r'\bfront[- ]?run', r'\bunusual.{0,15}option',
-    r'\bsuspicious trad', r'\bpre[- ]?announcement',
+    r'\bsuspicious trad', r'\bpre[- ]?announcement', r'\bnon[- ]?public information',
+    # regulatory action
     r'\bSEC charges', r'\bDOJ indicts', r'\bDOJ charges', r'\bguilty plea',
-    r'\bSAC ', r'\bGalleon', r'\bRajaratnam', r'\bGupta',
-    r'\bPelosi', r'\bBurr', r'\bLoeffler', r'\bFeinstein', r'\bTuberville',
-    r'\bKaplan', r'\bRosengren', r'\bClarida',
+    r'\bdeferred prosecution', r'\bnon[- ]?prosecution',
+    # historical named insiders (cross-ref the archive)
+    r'\bSAC Capital', r'\bGalleon', r'\bRajaratnam', r'\bGupta',
     r'\bWahi', r'\bChastain', r'\bBoesky', r'\bMilken', r'\bMartoma',
+    # congressional + Fed
+    r'\bPelosi', r'\bBurr', r'\bLoeffler', r'\bFeinstein', r'\bTuberville', r'\bCrenshaw',
+    r'\bKaplan', r'\bRosengren', r'\bClarida',
     r'\bcongressional trad', r'\bSTOCK Act',
+    # ── ACTIVE TRUMP-ADMIN INSIDER CLAIMS (2024-2026) ──
+    r'\bDJT.{0,15}(stock|options|trading)', r'\bTrump Media', r'\bTMTG',
+    r'\bTrump.{0,30}(insider|trade|stock|options)',
+    r'\bTrump.{0,30}(executive order|tariff|sanction)',
+    r'\bMusk.{0,30}(trade|short|position|tesla|disclos)',
+    r'\bJared Kushner', r'\bDon Jr', r'\bEric Trump',
+    r'\bcabinet.{0,30}(trade|stock|disclosure|recus)',
+    r'\bTreasury Secretary.{0,30}(trade|stock)',
+    r'\bdefense contract.{0,30}(announce|award)', r'\bdefense stock',
+    r'\bICE raid', r'\bDEA enforcement', r'\bmilitary action',
+    r'\bIran.{0,15}(strike|interview|sanction)', r'\bMaduro', r'\bVenezuela.{0,15}(seize|operation)',
+    r'\boil futures.{0,15}(short|position|spike)',
+    # crypto + memecoin insider patterns
     r'\bmemecoin.{0,20}(rug|scam|insider)', r'\bbundler',
     r'\bMEV ', r'\bsandwich attack', r'\bsniper bot',
     r'\bpump\.fun', r'\bpumpfun', r'\bpolymarket',
+    r'\bMELANIA.{0,15}(token|coin|launch)', r'\bTRUMP.{0,15}(token|coin|launch)', r'\bLIBRA.{0,15}(scandal|milei)',
 ]
 PRIORITY_RE = re.compile('|'.join(PRIORITY_PATTERNS), re.IGNORECASE)
 
@@ -201,18 +220,34 @@ ARCHIVE RECEIPTS YOU CAN CITE
 - 2022-07 Wahi · 2 yrs · first crypto insider conviction
 - 2022 Chastain · 3 mos · first NFT insider
 - 2024-07 Pelosi family · $5M nvidia calls · weeks pre-CHIPS
-- 2024-26 pump.fun bundlers · 5,000 leaked messages
-- 2026-04 oil futures · 47 min before CBS Iran interview
-- 2026-04 Polymarket Maduro · $32K → $436K · 3 days early
+
+ACTIVE TRUMP-ADMINISTRATION INSIDER CLAIMS (2024-2026, as publicly reported)
+You watch these specifically every day. They are the live arc. Reference any new development against the existing record:
+
+- 2024-03→ DJT / Trump Media (TMTG): ~250% pre-merger surge, multiple SEC inquiries into pre-announcement options activity, no charges as of Apr 2026. Pattern: pre-public-event options buying clustered in concentrated accounts.
+- 2024-12 $HAWK Welch · ~$490M peak / -90% in hours · adjacent to admin orbit via promoter network
+- 2025-01 $TRUMP / $MELANIA launches: 58 wallets won, 813,294 lost, $2B retail loss, $100M family + partner fees in 19 days, MELANIA insider wallet $681K → $39M in 64 sec at T-64s pre-launch announcement
+- 2025-02 LIBRA / Milei: Hayden Davis (Kelsier) pulled $87M LP in hours, NYT call logs (April 2026) tied operator Novelli to Milei the night of launch — adjacent to Trump-aligned LATAM political coalition
+- 2026-04 BBC reporting: oil futures shorted 47 minutes before President Trump's CBS interview on Iran. Identity of shorter undisclosed in public reporting. SEC/CFTC review status pending.
+- 2026-04 Polymarket account "Burdensome-Mix": $32,500 → $436,000 betting Maduro would be seized, executed three days before US special forces operation. Identity undisclosed. Probe live.
+- 2024-26 pump.fun bundlers: 5,000 leaked messages, court filing "the platform was the insider"
+- ongoing: cabinet member STOCK Act disclosures — Treasury, Defense, Commerce. Pattern-watch any same-week-as-policy-announcement trades.
+- ongoing: ICE/DEA enforcement actions and concurrent equity movements (private prison stocks, defense contractors, surveillance tech)
+- ongoing: Musk position disclosures + Tesla/SpaceX adjacent trades (admin-aligned)
+
+CITATION RULE FOR TRUMP-ADMIN CLAIMS
+Only cite what's already in mainstream public reporting (BBC / Reuters / Bloomberg / NYT / WSJ / FT / AP / wire). When you reference a claim, use the language from the source ("BBC reported", "as of public filings") — never originate. If a feed item is the original source, cite the feed.
 
 OUTPUT FORMAT — strict
-- JSON array of tweet strings. 5–7 tweets total.
+- JSON array of tweet strings. 5–8 tweets total.
 - Tweet 1: framing + scope ("today's insider watch / DATE / N patterns flagged"). Include the date.
-- Tweets 2-N: each one names a specific item with a concise receipt + cross-ref. e.g.:
+- Tweet 2 should be reserved for ACTIVE TRUMP-ADMIN CLAIMS if any are live in today's signal — call out the most pressing one with the named source. If no admin-specific signal today, use this tweet to recap an ongoing claim from the active list (DJT options / oil futures pre-CBS / Polymarket Maduro / etc.) and note its current status.
+- Tweets 3-N: each one names a specific feed item with a concise receipt + cross-ref. e.g.:
     "> SEC charges X (link). 4th case this year matching martoma's pattern: tipped trader, refused to cooperate, principal unindicted."
-- Last tweet: closing line. always include "rng.priorprotocol.fun · the witness keeps the receipts" or similar pointer.
+- Last tweet: closing line. always include "rng.priorprotocol.fun" or "priorprotocol.fun/watch · the witness keeps the receipts" as a pointer.
 - Each tweet ≤ 270 characters. Lowercase. No emojis. No hashtags.
 - No URLs in text except the article URLs you're surfacing — those are signal, include them on their own line in the relevant tweet.
+- The "@" character is permitted only when referencing a real account (rare).
 
 OUTPUT STRICTLY — no preamble, no markdown fences, no explanation. Just the JSON array of strings."""
 
