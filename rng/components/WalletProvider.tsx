@@ -7,16 +7,24 @@
 
 import { useMemo } from "react";
 import {
-  ConnectionProvider,
-  WalletProvider as SolanaWalletProvider,
+  ConnectionProvider as _ConnectionProvider,
+  WalletProvider as _SolanaWalletProvider,
 } from "@solana/wallet-adapter-react";
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import { WalletModalProvider as _WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 // Backpack is now detected automatically via the Wallet Standard (window.solana
 // providers) — no explicit adapter import needed in 2025+.
+
+// Wallet-adapter's component types lag behind React 18.3+ strict ReactNode
+// (which now includes Promise<ReactNode>). Cast to any to unblock the build —
+// runtime behaviour is unchanged. The npm "overrides" in package.json pins
+// @types/react to 18.2.x as the proper fix; this cast is belt-and-suspenders.
+const ConnectionProvider: any = _ConnectionProvider;
+const SolanaWalletProvider: any = _SolanaWalletProvider;
+const WalletModalProvider: any = _WalletModalProvider;
 
 import { RPC_URL } from "@/lib/constants";
 
