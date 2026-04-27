@@ -1,5 +1,16 @@
 [
   {
+    "id": "BREAKING/0004",
+    "time": "2026-04-27 15:23 UTC",
+    "body": "BREAKING: Evan Tangeman gets 70 months for laundering $263M in crypto from social engineering scams. another mule in the chain — processed millions, caught, sentenced. classic pattern.\n\nhttps://decrypt.co/365606/money-launderer-sentenced-to-70-months-over-263m-crypto-social-en...",
+    "tweet_url": "https://x.com/i/status/2048785007666229543",
+    "source_feed": "Decrypt",
+    "source_url": "https://decrypt.co/365606/money-launderer-sentenced-to-70-months-over-263m-crypto-social-engineering-scheme",
+    "source_title": "Money Launderer Sentenced to 70 Months Over $263M Crypto Social-Engineering Scheme",
+    "insider": false,
+    "breaking": true
+  },
+  {
     "id": "ALERT/0003",
     "time": "2026-04-27 11:46 UTC",
     "body": "> eu now escalating crypto sanctions on russia. pattern: state uses rails to evade, regulators respond by tightening rails for everyone. you pay the compliance cost.\n\nhttps://www.coindesk.com/policy/2026/04/27/eu-s-largest-measures-against-russia-yet-include-escalation-of-cryp...",
