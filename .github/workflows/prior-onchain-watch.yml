@@ -1,0 +1,65 @@
+name: prior.onchain-watch
+
+# On-chain forensics. Pulls top trending Solana tokens, analyzes
+# holder distribution, flags suspicious concentration patterns.
+# Auto-grows data/archive.json with high-score findings.
+#
+# Cadence: every 4h. Free APIs (DexScreener + Solana public RPC).
+
+on:
+  schedule:
+    - cron: '7 */4 * * *'   # every 4h at :07
+  workflow_dispatch:
+    inputs:
+      autopost:
+        description: 'Autopost top finding if score >= 60'
+        required: false
+        default: 'false'
+      dry_run:
+        description: 'Run analysis but don\'t commit / autopost'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prior-onchain-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+      - run: pip install -r scripts/requirements.txt
+      - name: Run onchain-watch
+        env:
+          ANTHROPIC_API_KEY:        ${{ secrets.ANTHROPIC_API_KEY }}
+          X_API_KEY:                ${{ secrets.X_API_KEY }}
+          X_API_SECRET:             ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN:           ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET:    ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          # default to NOT autoposting; opt in via workflow_dispatch input.
+          # we want findings to flow into the daily insider-watch synthesis
+          # rather than firing standalone alerts on every cron tick.
+          PRIOR_ONCHAIN_AUTOPOST:   ${{ github.event.inputs.autopost == 'true' && '1' || '0' }}
+          PRIOR_DRY_RUN:            ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
+        run: python scripts/onchain_watch.py
+      - name: Commit
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name  "prior.onchain"
+          git config user.email "prior-bot@users.noreply.github.com"
+          git pull --rebase --autostash origin main || true
+          if [[ -n "$(git status --porcelain data/)" ]]; then
+            git add data/
+            git commit -m "onchain: $(date -u +'%Y-%m-%dT%H:%MZ') · forensics scan"
+            git push
+          fi

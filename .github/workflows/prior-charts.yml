@@ -1,0 +1,54 @@
+name: prior.charts
+
+# Daily 18:00 UTC. Renders one chart from the deck (matplotlib),
+# posts to X with a one-line caption. 7-day per-chart cooldown so
+# the deck rotates.
+
+on:
+  schedule:
+    - cron: '0 18 * * *'   # 18:00 UTC daily (2pm ET, 11am PT — peak CT window)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Render but do not post'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prior-charts
+  cancel-in-progress: false
+
+jobs:
+  chart:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+      - run: pip install -r scripts/requirements.txt
+      - name: Render + post chart
+        env:
+          X_API_KEY:             ${{ secrets.X_API_KEY }}
+          X_API_SECRET:          ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN:        ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          PRIOR_DRY_RUN:         ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
+        run: python scripts/chart_post.py
+      - name: Commit
+        if: github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name  "prior.charts"
+          git config user.email "prior-bot@users.noreply.github.com"
+          git pull --rebase --autostash origin main || true
+          if [[ -n "$(git status --porcelain data/ memes/charts/)" ]]; then
+            git add data/ memes/charts/
+            git commit -m "charts: $(date -u +'%Y-%m-%dT%H:%MZ') · daily chart"
+            git push
+          fi
