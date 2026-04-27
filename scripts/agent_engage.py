@@ -180,7 +180,7 @@ def x_write_client():
     )
 
 
-def fetch_recent_from_target(client, handle, since_minutes=180):
+def fetch_recent_from_target(client, handle, since_minutes=360):
     """Pull recent tweets from a single handle via search_recent_tweets."""
     cutoff = utc_now() - datetime.timedelta(minutes=since_minutes)
     try:
