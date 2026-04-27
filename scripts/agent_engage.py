@@ -34,20 +34,30 @@ ENGAGE_STATE_PATH = DATA_DIR / "agent-engage-state.json"
 # ── target accounts to scan (handle, why we're watching them) ──────
 # Pick high-signal accounts whose audiences overlap with PRIOR's target.
 TARGETS = [
-    # crypto twitter AI agents
+    # ── crypto twitter AI agents ──
     {"handle": "aixbt_agent",   "weight": 3, "note": "crypto market alpha agent, ~700K followers"},
     {"handle": "truth_terminal","weight": 2, "note": "OG AI agent, $GOAT lineage"},
     {"handle": "elizaOS",       "weight": 1, "note": "AI agent infra"},
     {"handle": "ai16z_dao",     "weight": 1, "note": "AI agent project"},
     {"handle": "virtuals_io",   "weight": 1, "note": "AI agent platform"},
-    # high-signal crypto + finance accounts (feed PRIOR's archive into their threads)
+    # ── high-signal crypto + finance ──
     {"handle": "unusual_whales","weight": 3, "note": "options flow + politician trades"},
     {"handle": "blknoiz06",     "weight": 2, "note": "memecoin trader, big audience"},
     {"handle": "0xMert_",       "weight": 1, "note": "helius CEO, solana infra"},
     {"handle": "hosseeb",       "weight": 1, "note": "crypto VC, lots of cycle-takes"},
-    # finance / insider trading specialists
+    # ── insider trading specialists ──
     {"handle": "PelosiTracker_","weight": 3, "note": "tracks pelosi trades — direct overlap"},
     {"handle": "WhiteHouse",    "weight": 1, "note": "official admin handle, signal source"},
+    # ── populist / unfair-finance lane (FluentInFinance-style) ──
+    {"handle": "FluentInFinance","weight": 3, "note": "Lokenauth · wealth gap, CEO pay, tax dodges"},
+    {"handle": "MorePerfectUS", "weight": 2, "note": "populist econ commentary, big audience"},
+    {"handle": "PopBusiness",   "weight": 2, "note": "anti-corporate-power finance commentary"},
+    {"handle": "TheRealJase",   "weight": 1, "note": "wealth-gap and labor commentary"},
+    {"handle": "GuyNamedBilly", "weight": 1, "note": "labor + wage analysis"},
+    {"handle": "ProPublica",    "weight": 2, "note": "investigative journalism, IRS-leak source"},
+    {"handle": "ICIJorg",       "weight": 1, "note": "panama papers / pandora papers reporting"},
+    {"handle": "EconomicPolicy","weight": 1, "note": "EPI · productivity-pay gap data"},
+    {"handle": "RBReich",       "weight": 1, "note": "former Labor Sec, big audience on inequality"},
 ]
 
 # Patterns that promote a post to "candidate for engagement".
@@ -94,6 +104,33 @@ TRIGGER_PATTERNS = [
     # ── catch-all for "history rhymes" energy posts that PRIOR can add a receipt to ──
     r'\bhistory (repeats|rhymes|will)', r'\bsame.{0,10}(playbook|game|story|cycle)',
     r'\bagain\.{0,3}$', r'\bevery time',
+    # ── UNFAIR-FINANCE lane (FluentInFinance-style triggers) ──
+    r'\binequality', r'\bwealth gap', r'\bbillionaire', r'\bmillionaire',
+    r'\bCEO pay', r'\bexecutive comp', r'\bpay ratio', r'\bwage stagnation',
+    r'\bproductivity.{0,15}(gap|wage)',
+    r'\bminimum wage', r'\bliving wage', r'\bunion', r'\bstrike\b',
+    r'\btax cut', r'\btax dodge', r'\btax loophole', r'\btax avoid', r'\btax evas',
+    r'\bcarried interest', r'\bbonus depreciation', r'\bbillionaires.*tax',
+    r'\bbuyback', r'\bstock buyback', r'\b10b-18',
+    r'\bprivate equity', r'\bleveraged buyout', r'\bLBO\b', r'\bvulture fund',
+    r'\bToys R Us', r'\bRed Lobster', r'\bPetSmart', r'\bSears',
+    r'\bMcKinsey', r'\bAccenture', r'\bConsulting',
+    r'\bopioid', r'\bOxyContin', r'\bSackler', r'\bPurdue',
+    r'\binsulin', r'\bPBM\b', r'\bdrug pric', r'\bhealthcare cost',
+    r'\bmedical bankruptcy', r'\bsurprise bill', r'\bprior auth',
+    r'\bhousing.{0,10}(crisis|cost|afford)', r'\bBlackRock', r'\bBlackstone',
+    r'\bInvitation Homes', r'\binstitutional.{0,10}(landlord|housing)',
+    r'\bzoning', r'\bNIMBY',
+    r'\bpension.{0,10}(crisis|cut|underfund)', r'\b401k', r'\bretirement crisis',
+    r'\bgig (worker|economy)', r'\bUber.{0,10}(driver|worker)',
+    r'\bDoorDash', r'\bnon[- ]?compete', r'\bmisclassif',
+    r'\bshrinkflation', r'\bgreedflation', r'\bcorporate.{0,15}(profit|margin|greed)',
+    r'\bIRS audit', r'\bIRS funding',
+    r'\bstudent (debt|loan)', r'\btuition',
+    r'\bcost of living', r'\bgrocery price', r'\bfood prices',
+    r'\bantitrust', r'\bmonopoly', r'\bmarket concentr', r'\boligopol',
+    r'\bregulatory capture', r'\brevolving door',
+    r'\b401\(k\)', r'\bIRA contribution',
 ]
 TRIGGER_RE = re.compile('|'.join(TRIGGER_PATTERNS), re.IGNORECASE)
 
@@ -195,23 +232,41 @@ You're crafting ONE reply to a target X account whose post you've decided to eng
 - end naturally — sometimes "— prior", more often nothing.
 
 ARCHIVE RECEIPTS YOU CAN PULL FROM
+INSIDER TRADING / WALL ST
 - 1986 Boesky · $100M fine · 3 yrs served · cooperator → Milken
 - 1989 Milken · $600M penalty · 22 mos served · ~$3.7B net worth today
 - 2009-11 Rajaratnam · 11 yrs · longest insider sentence ever · wiretap precedent
-- 2012 Gupta · McKinsey/Goldman · called Rajaratnam 23 sec after the goldman board, 2 yrs served
-- 2013 SAC/Cohen · $1.8B settlement · 0 charges for principal · rebranded point72 · ~$15B today
-- 2014 Martoma · 9 yrs · $276M Elan/Wyeth Alzheimer's drug · refused to cooperate against Cohen
-- 2017 Mickelson · $931K Dean Foods · DOJ declined · Walters got 5
-- 2020-02 Burr · sold $1.6M post-classified-covid briefing · probe closed Jan 2021 · no charges
-- 2020-02 Loeffler · $20M+ same window · no charges
-- 2021-09 Kaplan / Rosengren · resigned · no charges
-- 2022-01 Clarida · "rebalanced" 3 days before Powell rate cut · no charges
+- 2012 Gupta · McKinsey/Goldman · 23 sec call to Rajaratnam after the goldman board, 2 yrs
+- 2013 SAC/Cohen · $1.8B settlement · 0 charges for principal · point72 · ~$15B today
+- 2014 Martoma · 9 yrs · $276M Elan/Wyeth Alzheimer's · refused to cooperate
+- 2020-02 Burr · sold $1.6M post-classified-covid · probe closed · no charges
+- 2020-02 Loeffler · $20M+ same window · bought Citrix, DuPont
+- 2021-09 Kaplan / Rosengren / Clarida · resigned · no charges
 - 2022-07 Wahi · Coinbase · 2 yrs · first crypto insider conviction
-- 2022 Chastain · OpenSea · 3 mos · first NFT insider
-- 2024-07 Pelosi family · $5M Nvidia call options · weeks before CHIPS Act vote
-- 2024-26 pump.fun bundlers · 5,000 leaked messages · "the platform was the insider"
-- 2026-04 oil futures shorted 47 min before Trump's CBS Iran interview (BBC reporting)
-- 2026-04 Polymarket "Burdensome-Mix" · $32,500 → $436,000 · 3 days before Maduro seizure
+- 2024-07 Pelosi family · $5M Nvidia calls · weeks before CHIPS Act
+- 2026-04 oil futures · 47 min before Trump CBS Iran interview (BBC)
+- 2026-04 Polymarket "Burdensome-Mix" · $32K → $436K · 3 days early on Maduro
+
+INEQUALITY / UNFAIR FINANCE
+- 2021 ProPublica IRS leak: top 25 billionaires "true tax rate" 3.4% · Bezos $0 fed tax 2007+2011 · Musk $0 in 2018
+- 2022 CEO-worker pay ratio: top US CEOs 344x median worker · 1965 was 21x · CEO pay +1,460% since 1978 vs +18% workers (EPI)
+- 1979-2023: productivity +80.9% · typical worker comp +29.4% · gap is the wealth transfer
+- 2017 TCJA: corp 35→21% · CBO $1.9T deficit · ~83% of cuts to top 1% by 2027 (TPC)
+- 2018 Amazon: $11.2B profit · $0 federal tax · $129M rebate · effective rate -1.2%
+- 1982 SEC Rule 10b-18 legalized stock buybacks (previously treated as manipulation) · 2022 S&P 500 buybacks $922B same year layoffs hit 360k
+- carried interest: PE/HF fees taxed as cap gains (~20%) not ordinary income (~37%) · saves industry ~$14B/yr
+- IRS million-dollar audit rate: 12.5% (2011) → 1.6% (2019) · EITC claimants more likely to be audited than millionaires
+- Federal min wage: $7.25 since July 2009 · longest stretch in history · in 2009 dollars now ~$5.20
+- 1980s pension coverage 38% private workers · 2024: ~13% · risk transferred to workers · median 401k <$30k
+- 2022 corporate margins hit 50yr highs · profits drove ~53% of inflation 2020-23 (Groundwork)
+- McKinsey advised Purdue 2004+ to "turbocharge" OxyContin · proposed rebates to distributors for overdose deaths · $641M settlement · 0 individual charges
+- Toys R Us: KKR/Bain $6.6B LBO 2005 · liquidated 2018 · 33,000 jobs lost · execs took $30M bonuses while denying severance
+- Red Lobster: Golden Gate Capital sold the real estate, leased back at high rents · bankruptcy 2024
+- Insulin: ~$300/vial US list vs ~$20-30 EU · 3 makers control 90%+
+- ~66.5% of US bankruptcies cite medical bills as top cause (Himmelstein 2019)
+- Top 1% evade ~$163B/yr in taxes (NBER 2021) — 28% of all unpaid tax
+- Institutional landlords own ~7% of single-family rentals in metros like Phoenix, Atlanta, Charlotte
+- Uber/Lyft/DoorDash spent $200M+ on CA Prop 22 (2020) · saved them $4-5B/yr in unpaid benefits
 
 Output ONLY the reply text. No preamble. No quotes around it. No markdown."""
 

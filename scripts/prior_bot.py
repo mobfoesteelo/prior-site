@@ -193,6 +193,15 @@ MOODS (pick one per call)
 - hottake: a single-line reactive observation. cold open, no setup. lands like a punch. example: "fines are licenses. priced in." or "boesky kept his fortune. cohen is worth more now. patterns work."
 - engagement_bait: end with an open-loop or question that invites a reply. NEVER use generic CT bait ("ratio me", "rt if you agree"). the question is genuine and from the archive. examples: "name one bank exec who served real time post-2008. i'll wait." / "fill in the blank: paid $___ in fines, kept the position." / "pick: rajaratnam 11y vs cohen 0y. who's the better warning?"
 - breaking: a tight cold reaction to news that just landed. structure: [headline distilled]. [the receipt that contextualizes it]. nothing more. no signature. delivered at the speed of news.
+- inequality: cite a specific stat about the wealth gap, CEO/worker pay, productivity vs wages, billionaire taxes. dry, sourced. the witness names what the numbers actually say.
+- payday: name a specific CEO compensation receipt. specific company, specific year, specific multiple of median worker pay. the math is the argument.
+- loophole: name a specific tax dodge — carried interest, bonus depreciation, real estate exchange, pass-through deduction. cite the dollar value and who benefits.
+- wages: receipts on wage stagnation. min wage frozen since 2009. productivity-pay gap. shrinkflation profit data.
+- housing: institutional SFH ownership stats. hedge fund residential plays. zoning + supply restrictions. specific numbers.
+- healthcare: insulin pricing differentials. PBM rebate schemes. medical bankruptcy stats. opioid settlements vs deaths.
+- pension: pension → 401k shift since 1980. risk transferred to workers. median 401k balance.
+- buyback: stock buyback receipts vs layoffs/wage suppression. SEC Rule 10b-18 history (1982 legalization). $922B 2022 record.
+- pe: private equity destruction stories. Toys R Us. Red Lobster. PetSmart. real-estate strip-and-flip. specific job loss numbers.
 """
 
 USER_PROMPTS = [
@@ -317,6 +326,29 @@ USER_PROMPTS = [
     "Post a 'breaking' reaction — pretend SEC just charged a hedge fund for insider trading. structure: [distilled headline]. [the archive receipt that contextualizes it]. no signature. just two lines.",
     "Post a 'breaking' reaction — pretend a senator's options trade was just disclosed. one-line distillation + one-line cross-ref to burr or pelosi. nothing more.",
     "Post a 'breaking' reaction — pretend a memecoin just rugged. one-line distillation + cross-ref to pump.fun bundlers. dry, fast, no commentary.",
+    # ── INEQUALITY / UNFAIR FINANCE expansion ──
+    "Post an 'inequality' — top 25 US billionaires' \"true tax rate\" was 3.4% (ProPublica IRS leak 2014-2018). bezos paid $0 federal income tax in 2007 and 2011. musk $0 in 2018.",
+    "Post a 'payday' — top US CEOs in 2022: 344x median worker pay. in 1965 it was 21x. 1,460%+ growth since 1978 vs 18% for workers. (EPI)",
+    "Post a 'loophole' — carried interest. PE / hedge fund manager fees taxed as long-term cap gains (~20%) instead of ordinary income (~37%). saves industry ~$14B/yr. survives every reform attempt.",
+    "Post a 'wages' — federal minimum wage has been $7.25/hr since July 2009. longest stretch without an increase in history. in 2009 dollars now worth about $5.20.",
+    "Post a 'wages' — 1979-2023: productivity up 80.9%. hourly compensation for the typical worker up 29.4%. the gap is the wealth transfer. (EPI)",
+    "Post a 'housing' — Blackstone, Invitation Homes, Pretium. ~7% of single-family rentals in metros like Phoenix, Atlanta, Charlotte are now owned by institutions. retail finally has receipts.",
+    "Post a 'healthcare' — insulin: ~$300/vial US list price vs ~$20-30 in EU. 3 manufacturers (Lilly, Novo, Sanofi) control 90%+. IRA capped Medicare insulin at $35/mo only.",
+    "Post a 'healthcare' — ~66.5% of US bankruptcies cite medical bills as the top contributor (Himmelstein 2019). 530K families a year. only country among peers.",
+    "Post a 'pension' — 1980: ~38% of private workers had a pension. 2024: ~13%. the 401k shift transferred risk from corporations to workers. most have less than $30k median saved.",
+    "Post a 'buyback' — stock buybacks were treated as market manipulation until SEC Rule 10b-18 in 1982. forty years later: 2022 alone saw $922B in S&P 500 buybacks while layoff announcements topped 360k.",
+    "Post a 'pe' — Toys R Us. KKR/Bain/Vornado bought it 2005 in a $6.6B leveraged buyout. interest payments crippled it. liquidated 2018. 33,000 jobs lost. executives took ~$30M bonuses while denying severance.",
+    "Post a 'pe' — Red Lobster. Golden Gate Capital sold the real estate from under the company in 2014, then leased it back at high rents. bankruptcy 2024. jobs evaporated.",
+    "Post a 'loophole' — Amazon 2018: $11.2B profit. $0 federal tax. received a $129M tax rebate. effective rate -1.2%. (ITEP)",
+    "Post an 'inequality' — IRS audit rate on million-dollar earners fell from 12.5% (2011) to 1.6% (2019). EITC claimants below poverty line more likely to be audited than millionaires.",
+    "Post a 'wages' — corporate profit margins hit 50-year highs in 2022. profits drove ~53% of inflation 2020-2023 (Groundwork Collaborative). wages chased; they didn't lead.",
+    "Post a 'loophole' — 2017 TCJA cut corporate tax 35% → 21%. CBO: $1.9T added to deficit over 10y. Tax Policy Center: ~83% of cuts go to top 1% by 2027.",
+    "Post a 'pe' — McKinsey advised Purdue Pharma 2004+ to \"turbocharge\" OxyContin sales. proposed paying distributors rebates for overdose deaths. paid $641M in 2021. records destroyed. zero individual charges for senior partners.",
+    "Post an 'inequality' — top 1% evade ~$163B/yr in taxes — ~28% of all unpaid tax (NBER 2021). yet 1099-K threshold dropped to $600 to chase Etsy sellers.",
+    "Post an 'echo' — McKinsey 2021 ($641M opioid settlement) and HSBC 2012 ($1.92B laundering DPA). different industries. same structure: institution pays, individuals don't.",
+    "Post a 'wages' — gig workers: Uber/Lyft/DoorDash spent $200M+ on California Prop 22 (2020) to keep drivers as 1099. saved them an estimated $4-5B/yr in unpaid benefits.",
+    "Post a 'thesis' — financial regulation is one-way. wage stagnation has no enforcement agency. CEO pay has no cap. but a $20 false claim by a freelancer triggers a 1099-K audit.",
+    "Post a 'hottake' — \"competition\" is a story you tell consumers. PBMs control 80% of prescriptions. 4 airlines control 80% of flights. 5 banks control 50% of deposits.",
 ]
 
 
