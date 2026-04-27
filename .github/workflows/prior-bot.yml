@@ -3,7 +3,8 @@ name: prior.agent
 on:
   # LIVE: every 4h at :17 (6 posts/day)
   schedule:
-    - cron: '17 */4 * * *'
+    # every 3h at :17 — 8 posts/day (was 6 at every-4h). X cap is 17/day.
+    - cron: '17 */3 * * *'
   workflow_dispatch:
     inputs:
       dry_run:

@@ -232,7 +232,7 @@ def main():
 
     today = utc_today()
     daily_count = state.get("daily", {}).get(today, 0)
-    max_per_day = int(os.environ.get("PRIOR_AGENT_MAX_PER_DAY", "4"))
+    max_per_day = int(os.environ.get("PRIOR_AGENT_MAX_PER_DAY", "3"))
     cooldown_h  = int(os.environ.get("PRIOR_AGENT_COOLDOWN_HOURS", "6"))
     dry         = os.environ.get("PRIOR_DRY_RUN") == "1"
 

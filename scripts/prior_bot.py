@@ -186,6 +186,9 @@ MOODS (pick one per call)
 - mechanism: name one of the five control mechanisms (access / information / enforcement / narrative / exit) and show how it operated in a specific cycle.
 - carousel: invoke the DPA carousel. the same banks. the same fines. the same horse comes back around. priced in.
 - dispatch: the tone of a real-time alert. brief, precise, sourced. "logged: [event]. context: [prior pattern]. status: [what happens next]."
+- hottake: a single-line reactive observation. cold open, no setup. lands like a punch. example: "fines are licenses. priced in." or "boesky kept his fortune. cohen is worth more now. patterns work."
+- engagement_bait: end with an open-loop or question that invites a reply. NEVER use generic CT bait ("ratio me", "rt if you agree"). the question is genuine and from the archive. examples: "name one bank exec who served real time post-2008. i'll wait." / "fill in the blank: paid $___ in fines, kept the position." / "pick: rajaratnam 11y vs cohen 0y. who's the better warning?"
+- breaking: a tight cold reaction to news that just landed. structure: [headline distilled]. [the receipt that contextualizes it]. nothing more. no signature. delivered at the speed of news.
 """
 
 USER_PROMPTS = [
@@ -291,6 +294,25 @@ USER_PROMPTS = [
     "Post a one-liner about being 'on edge' — clipped, dry, slightly threatening in tone but never crossing into low-effort vulgarity. think of a witness who has stopped caring about decorum because they have run out of patience.",
     "Post a 'thesis' — the line between 'serious capital' and 'gambling' is enforced by who's in the room. retail finally has receipts of their own. the ledger does not care about the costume.",
     "Post an 'informant' — the audience asking 'is this real' is the audience the protocol is built for. yes. it's real. the receipt is the protocol.",
+    # ── HOTTAKE: short reactive 1-line punches ──
+    "Post a 'hottake' — a single-line cold observation. no setup, no signature. lands hard. example energy: 'fines are licenses. priced in.' or 'they wrote the playbook. they sold you the playbook.'",
+    "Post a 'hottake' on the DPA carousel in one line. cold open. no preamble. example energy: 'deferred is a verb. it means later. it means never.'",
+    "Post a 'hottake' on insider trading vs market — one line. example: 'every insider trading conviction is a story about a tipster. the structure is unindicted.'",
+    "Post a 'hottake' on memecoins as honest discovery — one line. cold. example: 'fiat is a meme too. it just had a longer marketing budget.'",
+    "Post a 'hottake' on the senate stock trades — one line. cold. example: 'when a senator buys defense before the bill, the bill is the derivative.'",
+    "Post a 'hottake' on regulators — one line. cold. example: 'the regulator's job is to be late. on time would be journalism.'",
+    "Post a 'hottake' on the throne and bank — one line. example: 'the throne is the brand. the bank is the business. the document is the same document.'",
+    # ── ENGAGEMENT_BAIT: end with a question that begs replies ──
+    "Post an 'engagement_bait' — a substantive question rooted in the archive that invites real answers, not ratio-bait. example: 'name one bank exec who served real prison time post-2008. i'll wait.' (period at the end. cold.)",
+    "Post an 'engagement_bait' on insider sentences. example: 'rajaratnam 11 yrs. cohen never charged. martoma 9 yrs. milken 22 mos. pick: which one was the actual deterrent?'",
+    "Post an 'engagement_bait' on STOCK Act. example: 'a senator made $5M on nvidia options weeks before the CHIPS act vote. the disclosure was on time. the consequences are still optional. what's a $200 fine to you?'",
+    "Post an 'engagement_bait' on memecoin asymmetry. example: 'someone bought $TRUMP at T-64s and walked with $39M. you found out after the candle. fill in the blank: ___ is who decided.'",
+    "Post an 'engagement_bait' on the cycle. example: 'fill in the blank: 1929 → 1987 → 2008 → ___. the clock is the only variable.'",
+    "Post an 'engagement_bait' that's a one-liner challenge: 'pick the year: 1929. 1987. 2008. 2024. now name what was different about it.' lands like an invite.",
+    # ── BREAKING: cold reaction to news ──
+    "Post a 'breaking' reaction — pretend SEC just charged a hedge fund for insider trading. structure: [distilled headline]. [the archive receipt that contextualizes it]. no signature. just two lines.",
+    "Post a 'breaking' reaction — pretend a senator's options trade was just disclosed. one-line distillation + one-line cross-ref to burr or pelosi. nothing more.",
+    "Post a 'breaking' reaction — pretend a memecoin just rugged. one-line distillation + cross-ref to pump.fun bundlers. dry, fast, no commentary.",
 ]
 
 

@@ -201,12 +201,27 @@ setInterval(refreshCrawl, CRAWL_REFRESH_MS);
 async function refresh() {
   const archive = await fetchJSON('/data/insider-watch.json');
   if (!archive || !archive.length) {
-    $('#report-date').textContent  = 'AWAITING';
-    $('#report-status').textContent = 'first daily run pending';
-    ['#cnt-tweets', '#cnt-signals', '#cnt-alerts', '#cnt-archive'].forEach(s => {
-      const e = $(s); if (e) e.textContent = '0';
-    });
-    renderThread(null);
+    $('#report-date').textContent  = new Date().toISOString().slice(0, 10);
+    $('#report-status').textContent = 'awaiting first run · 14:00 UTC daily';
+    $('#cnt-tweets').textContent  = '—';
+    $('#cnt-signals').textContent = '—';
+    $('#cnt-alerts').textContent  = '—';
+    $('#cnt-archive').textContent = '0';
+
+    // While the first report lands, run the archive spotlight in the
+    // thread stage so the page never looks empty.
+    const stage = $('#thread-stage');
+    if (stage) {
+      stage.innerHTML = `
+        <div class="thread-tweet" style="opacity:1;transform:none">
+          <span class="tweet-num">— archive teaser —</span>
+          the daily insider watch fires every day at 14:00 UTC.
+          tomorrow's report will land here, animated tweet-by-tweet.
+          for now: 65 cycles on file, 162 years archived, the rolodex spotlight is to the right →
+        </div>
+      `;
+    }
+    $('#thread-sub').textContent = 'first drop pending';
     renderSources(null);
     renderHistory(null);
     return;
