@@ -1,21 +1,14 @@
-name: prior.insider-watch
+name: prior.weekly-recap
 
-# Daily "INSIDER WATCH" thread — synthesizes 24h of insider-trading signal
-# from public feeds + on-chain alerts, cross-references the archive,
-# posts a 5-7 tweet thread on X, persists the report to data/insider-watch.json
-# (consumed by /watch streamable visualization).
+# Sundays 17:00 UTC. Synthesizes the week into a 5-7 tweet recap thread.
 
 on:
   schedule:
-    # 13:00 UTC daily — 9am ET / 6am PT
-    # this is THE MORNING BRIEFING — captures overnight + morning news,
-    # synthesizes insider trading + unfair finance + Trump-admin claims
-    # into a single 5-7 tweet thread.
-    - cron: '0 13 * * *'
+    - cron: '0 17 * * 0'   # Sunday 17:00 UTC
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Generate report but do not post to X'
+        description: 'Generate but do not post'
         required: false
         default: 'false'
 
@@ -23,11 +16,11 @@ permissions:
   contents: write
 
 concurrency:
-  group: prior-insider-watch
+  group: prior-weekly-recap
   cancel-in-progress: false
 
 jobs:
-  watch:
+  recap:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -38,26 +31,24 @@ jobs:
           cache: pip
           cache-dependency-path: scripts/requirements.txt
       - run: pip install -r scripts/requirements.txt
-      - name: Run insider-watch
+      - name: Run weekly recap
         env:
           ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
           X_API_KEY:             ${{ secrets.X_API_KEY }}
           X_API_SECRET:          ${{ secrets.X_API_SECRET }}
           X_ACCESS_TOKEN:        ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-          # Opus for the daily flagship thread — this is PRIOR's signature
-          # piece of content, can't be Sonnet-mid.
-          PRIOR_MODEL:           'claude-opus-4-5'
+          PRIOR_MODEL:           'claude-opus-4-5'   # weekly is flagship — Opus
           PRIOR_DRY_RUN:         ${{ github.event.inputs.dry_run == 'true' && '1' || '0' }}
-        run: python scripts/insider_watch.py
-      - name: Commit report + log
+        run: python scripts/weekly_recap.py
+      - name: Commit
         if: github.event.inputs.dry_run != 'true'
         run: |
-          git config user.name  "prior.watch"
+          git config user.name  "prior.recap"
           git config user.email "prior-bot@users.noreply.github.com"
           git pull --rebase --autostash origin main || true
           if [[ -n "$(git status --porcelain data/)" ]]; then
             git add data/
-            git commit -m "watch: $(date -u +'%Y-%m-%dT%H:%MZ') · daily insider report"
+            git commit -m "recap: $(date -u +'%Y-%m-%dT%H:%MZ') · weekly thread"
             git push
           fi

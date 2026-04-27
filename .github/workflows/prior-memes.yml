@@ -3,7 +3,8 @@ name: prior.memes
 on:
   # Every 8h at :42 — 3 memes/day max
   schedule:
-    - cron: '42 */8 * * *'
+    # every 4h — keeps PRIOR's profile visually alive between text posts
+    - cron: '42 */4 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
