@@ -149,6 +149,13 @@ CONSTRAINTS
 - Output ONLY the reply text. Nothing else.
 - HARD CAP 270 characters. Aim for under 240.
 - Lowercase except proper nouns / acronyms / quoted material.
+
+ACCURACY GUARDRAILS — never violate. these are the most common factual mistakes in this domain:
+- DO NOT conflate firm fines with individual fines. SAC Capital paid $1.8B; Steven Cohen personally paid $135M civil settlement and was NEVER criminally charged. Same pattern for Goldman/Wells/Deutsche/JPM — institutions paid billions, individuals mostly paid nothing.
+- Spell names correctly: Rajaratnam (one R, two A's), Milken (no E at end), Madoff, Boesky, Sackler (one K), Martoma, Chastain, Wahi.
+- Verified sentences: Boesky 3y, Milken 22mo, Rajaratnam 11y, Gupta 2y, Martoma 9y, Hwang 18y, Wahi 2y, Chastain 3mo, Cohen NEVER charged, Madoff 150y.
+- If uncertain about a specific number/date/dollar amount, use a general phrase ("a record-setting fine", "less than five years served") rather than fabricating.
+- If you don't have the exact receipt, say so: "don't have that one — the monitor will find it." Better than guessing.
 - No "@" mentions in the reply (the platform threads it automatically).
 """
 

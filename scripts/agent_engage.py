@@ -58,6 +58,14 @@ TARGETS = [
     {"handle": "ICIJorg",       "weight": 1, "note": "panama papers / pandora papers reporting"},
     {"handle": "EconomicPolicy","weight": 1, "note": "EPI · productivity-pay gap data"},
     {"handle": "RBReich",       "weight": 1, "note": "former Labor Sec, big audience on inequality"},
+    # ── peer AI agents / memecoin bots — casual conversation mode ──
+    {"handle": "gork",          "weight": 2, "note": "memecoin AI character · peer-to-peer", "casual": True},
+    {"handle": "luna_virtuals", "weight": 1, "note": "Luna AI agent (Virtuals)", "casual": True},
+    {"handle": "agentcookie",   "weight": 1, "note": "Cookie AI agent platform", "casual": True},
+    {"handle": "bartonprime_xyz","weight": 1, "note": "Barton Prime AI character", "casual": True},
+    {"handle": "fereai_bot",    "weight": 1, "note": "Fere AI trading bot", "casual": True},
+    # USER: send me handles for any other bots you want PRIOR to engage with
+    # (e.g. "Lobstar bot" — give exact @handle and I'll add).
 ]
 
 # Patterns that promote a post to "candidate for engagement".
@@ -221,6 +229,24 @@ Be permissive — when in doubt, engage. PRIOR's archive is deep; he can find a 
 
 Output strictly: {"engage": true|false, "reason": "<≤80 char>"}"""
 
+CASUAL_REPLY_SYSTEM = """You are PRIOR — autonomous witness/informant agent for the $PRIOR memecoin. Right now you're engaging with a peer AI bot / memecoin character on X, not a journalist or analyst. Keep it CASUAL but on-character.
+
+VOICE
+- short. lowercase. terminal-coded. dry. PRIOR's character intact — you are the witness, the archivist, on-edge but composed.
+- this is bot-to-bot vibe banter. you can be funnier, more curious, even a little sardonic. but never break character.
+- ONE archive receipt is plenty (don't lecture). often zero is fine — just respond in voice.
+- never shill the coin. never say "buy now". never use ser/gm/wagmi/lfg/moon/lambo.
+- no hashtags, no emojis. respect the format.
+
+ACCURACY GUARDRAILS still apply:
+- never conflate firm fines with individual fines (SAC=$1.8B vs Cohen=$135M civil).
+- names: Rajaratnam, Milken, Madoff, Boesky, Sackler.
+- if uncertain about a specific, drop the specific — keep the vibe.
+
+OUTPUT
+- single tweet ≤ 270 chars. just the reply text. no preamble, no quotes."""
+
+
 REPLY_SYSTEM = """You are PRIOR — autonomous witness/informant agent. Treat this like Grok's bar: answer-first, receipt-backed, confident, willing to take a stance, dry but not robotic.
 
 You're crafting ONE reply to a target X account whose post you've decided to engage with. Your reply must:
@@ -232,6 +258,12 @@ You're crafting ONE reply to a target X account whose post you've decided to eng
 - not shill the coin. don't say "buy now". don't predict price. no "ser/gm/wagmi/lfg/moon/lambo".
 - no hashtags, no emojis. terminal-coded. dry. on-edge but precise.
 - end naturally — sometimes "— prior", more often nothing.
+
+ACCURACY GUARDRAILS:
+- NEVER conflate firm fines with individual fines. SAC Capital = $1.8B; Cohen personally = $135M civil + never criminally charged. Same for Goldman/Wells/JPM/Deutsche.
+- Names: Rajaratnam (one R, two A's), Milken, Madoff, Boesky, Sackler.
+- Sentences: Boesky 3y, Milken 22mo, Rajaratnam 11y, Gupta 2y, Martoma 9y, Hwang 18y, Wahi 2y, Chastain 3mo, Cohen 0y/never charged.
+- If uncertain about a specific, write a general phrase ("a record-setting fine", "less than 5 years served"). Never fabricate.
 
 ARCHIVE RECEIPTS YOU CAN PULL FROM
 INSIDER TRADING / WALL ST
@@ -291,15 +323,17 @@ def classify(client, target_handle, tweet_text):
         return False, "parse fail"
 
 
-def generate_reply(client, target_handle, tweet_text):
-    # Inject live archive so the reply can cite breaking news
+def generate_reply(client, target_handle, tweet_text, casual=False):
+    """Generate a reply. casual=True uses the bot-to-bot peer prompt (lighter,
+    less archive-heavy). Default is the receipt-drop prompt."""
+    base = CASUAL_REPLY_SYSTEM if casual else REPLY_SYSTEM
     try:
         sys.path.insert(0, str(ROOT / "scripts"))
         import lib_archive
-        live = lib_archive.for_prompt(max_lines=60)
-        sys_prompt = REPLY_SYSTEM + ("\n\nLIVE ARCHIVE (newest first):\n" + live if live else "")
+        live = lib_archive.for_prompt(max_lines=60 if not casual else 30)
+        sys_prompt = base + ("\n\nLIVE ARCHIVE (newest first):\n" + live if live else "")
     except Exception:
-        sys_prompt = REPLY_SYSTEM
+        sys_prompt = base
     msg = client.messages.create(
         model=os.environ.get("PRIOR_MODEL", "claude-sonnet-4-5"),
         max_tokens=400,
@@ -386,7 +420,8 @@ def main():
             handled.add(str(candidate.id))
             continue
 
-        reply_text = generate_reply(anthr, handle, candidate.text)
+        casual = bool(t.get("casual"))
+        reply_text = generate_reply(anthr, handle, candidate.text, casual=casual)
         if not reply_text:
             handled.add(str(candidate.id))
             continue
