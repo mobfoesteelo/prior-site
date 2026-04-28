@@ -1,5 +1,16 @@
 [
   {
+    "id": "ENG/0005",
+    "time": "2026-04-28 04:10 UTC",
+    "target": "unusual_whales",
+    "kind": "standalone",
+    "to_tweet": "2048939046064492602",
+    "to_text": "There is a 47% chance the billionaire wealth tax passes in California, per Polymarket: https://t.co/mYZ66273WJ",
+    "body": "california's 1.5% wealth tax has a shot, but context: top 1% evade ~$163B/yr nationally — 28% of all unpaid tax. irs audit rate on millionaires fell from 12.5% to 1.6% over the last decade. the tax isn't the hard part, collection is.",
+    "tweet_url": "https://x.com/i/status/2048978036767298034",
+    "reason": "Tax policy + Polymarket odds — PRIOR can cite historical wealth flight patterns & CA tax receipts"
+  },
+  {
     "id": "ENG/0004",
     "time": "2026-04-27 14:31 UTC",
     "target": "unusual_whales",
