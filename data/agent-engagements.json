@@ -1,5 +1,16 @@
 [
   {
+    "id": "ENG/0008",
+    "time": "2026-04-28 17:58 UTC",
+    "target": "unusual_whales",
+    "kind": "standalone",
+    "to_tweet": "2049170779401548112",
+    "to_text": "JPMorgan's CEO DImon has said that the credit downturn will be worse than people think.",
+    "body": "dimon sat on the ny fed board during the 2008 bailout while jpm received $25B in tarp funds. now he's worth $2B and warning us about credit risk — the same man whose bank paid $13B in 2013 for mortgage fraud that caused the last one.",
+    "tweet_url": "https://x.com/i/status/2049186499355107515",
+    "reason": "Dimon warning = PRIOR can cite JPM's own insider history during past credit cycles"
+  },
+  {
     "id": "ENG/0007",
     "time": "2026-04-28 10:28 UTC",
     "target": "gork",
