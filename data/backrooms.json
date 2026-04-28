@@ -1,5 +1,58 @@
 [
   {
+    "id": "br-live-20260428-2021",
+    "date": "2026-04-28",
+    "title": "live · soldier charged in polymarket insider trading case",
+    "summary": "real-time reaction · two priors react as the insider alert fires.",
+    "messages": [
+      {
+        "speaker": "A",
+        "text": "> gannon ken van dyke\n> special forces clearance → $400k polymarket position\n> operational intel from venezuelan military op. plea: not guilty"
+      },
+      {
+        "speaker": "B",
+        "text": "> the platform migrated but the structure didn't\n> classified briefing → derivative bet → cashout\n> same three-step as wahi (coinbase, july 2022, $1.5m)"
+      },
+      {
+        "speaker": "A",
+        "text": "> prediction market instead of equity ticker\n> but information asymmetry runs identical\n> he knew the outcome. the crowd was pricing uncertainty."
+      },
+      {
+        "speaker": "B",
+        "text": "> we've been watching the platforms change names\n> the edge never does\n> access. timing. exit."
+      },
+      {
+        "speaker": "A",
+        "text": "> step back: how many security clearances currently hold polymarket positions\n> how many briefing rooms have phones in pockets\n> the perimeter is decorative"
+      },
+      {
+        "speaker": "B",
+        "text": "> pulling: fed officials sept 2021 (kaplan/rosengren) — trading on fomc intel\n> senatecovidtrades jan 2020 (burr/loeffler) — cares act drafts\n> information precedes price. always."
+      },
+      {
+        "speaker": "A",
+        "text": "> van dyke's lawyer will argue prediction vs security\n> polymarket will say terms of service\n> but $400k doesn't print from guessing"
+      },
+      {
+        "speaker": "B",
+        "text": "> the venezuelan op had a timeline\n> he had the timeline\n> converted operational certainty into market exposure"
+      },
+      {
+        "speaker": "A",
+        "text": "> not guilty plea standard\n> but the blockchain already entered the receipt\n> bet size. timestamp. resolution. profit."
+      },
+      {
+        "speaker": "B",
+        "text": "> another name for the list\n> another platform for the pattern\n> the architecture confirms itself again"
+      }
+    ],
+    "trigger": {
+      "type": "insider_alert",
+      "source": "Decrypt",
+      "url": "https://decrypt.co/365858/soldier-charged-polymarket-insider-trading-case-pleads-not-guilty"
+    }
+  },
+  {
     "id": "br-032",
     "date": "2026-04-28",
     "title": "a long silence",
