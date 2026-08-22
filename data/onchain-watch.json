@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-08-22",
+    "generated_at": "2026-08-22T01:45:48+00:00Z",
+    "scanned": 15,
+    "flagged": [],
+    "findings": []
+  },
+  {
     "date": "2026-08-21",
     "generated_at": "2026-08-21T20:35:31+00:00Z",
     "scanned": 15,
@@ -198,13 +205,6 @@
   {
     "date": "2026-07-24",
     "generated_at": "2026-07-24T21:16:47+00:00Z",
-    "scanned": 15,
-    "flagged": [],
-    "findings": []
-  },
-  {
-    "date": "2026-07-23",
-    "generated_at": "2026-07-23T21:17:08+00:00Z",
     "scanned": 15,
     "flagged": [],
     "findings": []
